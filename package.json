@@ -1,0 +1,30 @@
+{
+  "name": "stremio-enhanced",
+  "version": "1.0.0",
+  "description": "basically a custom stremio client that gives the user the ability to use custom themes & plugins.",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "lint": "eslint -c .eslintrc --ext .ts ./src",
+    "start": "yarn build && electron ./dist/main.js"
+  },
+  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo",
+    "typescript"
+  ],
+  "author": "REVENGE",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "electron": "^20.0.1",
+    "eslint": "^7.32.0",
+    "typescript": "^4.7.2"
+  },
+  "dependencies": {}
+}
