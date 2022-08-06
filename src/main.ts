@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import { resolve, join } from "path";
-import * as cp from "child_process";
+import { fork } from "child_process";
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -19,7 +19,7 @@ function createWindow() {
 }
 
 function RunStreamServer() {
-    setTimeout(() => { cp.fork(resolve(__dirname, '../node_modules/stremio-streaming-server/server.js'), { stdio: "ignore" }) && console.log("[ INFO ] stremio server is running.") }, 0);
+    setTimeout(() => { fork(resolve(__dirname, '../node_modules/stremio-streaming-server/server.js'), { stdio: "ignore" }) && console.log("[ INFO ] stremio server is running.") }, 0);
 }
 
 app.on("ready", () => {
