@@ -2,3 +2,4 @@ node_modules
 dist
 yarn.lock
 stremio-enhanced-win32-x64
+release-builds
