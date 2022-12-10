@@ -1,7 +1,8 @@
-<img src="https://github.com/REVENGE977/stremio-enhanced/raw/main/images/icon.ico" style="display: block;
-  margin-left: auto;
-  margin-right: auto;">
-<h1 style="text-align: center;">[WIP] Stremio Enhanced</h1>
+<p align="center">
+  <img src="https://github.com/REVENGE977/stremio-enhanced/raw/main/images/icon.ico">
+</p>
+
+<h1 align="center">[WIP] Stremio Enhanced</h1>
 
 ## What is stremio enhanced ?
 basically a stremio client with plugins and themes support,
@@ -31,4 +32,4 @@ you're free to improve it and make a [pull request](https://github.com/REVENGE97
 
 ## Todo
 - might switch to [stremio web v5](https://github.com/Stremio/stremio-web)
-- Updater
+- updater
