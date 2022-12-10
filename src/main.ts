@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, shell } from "electron";
 import { resolve, join } from "path";
 import { fork } from "child_process";
 import { mkdirSync, existsSync } from "fs";
@@ -20,6 +20,11 @@ function createWindow() {
 
     mainWindow.setMenu(null);
     mainWindow.loadURL("https://app.strem.io/shell-v4.4/?streamingServer=http%3A%2F%2F127.0.0.1%3A11470#/");
+
+    mainWindow.webContents.setWindowOpenHandler((edata:any) => {
+        shell.openExternal(edata.url);
+        return { action: "deny" };
+    });
 
     //mainWindow.webContents.openDevTools();
 }

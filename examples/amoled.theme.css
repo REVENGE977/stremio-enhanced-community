@@ -2666,11 +2666,11 @@ body #search-dropdown .footer-container .icons .icon-container .icon-info {
   filter: none;
   background: #b174d7
 }
-
+/* 
 .sidebar .season-chooser ul li:focus {
   outline: 1px solid;
   outline-offset: -1px
-}
+} */
 
 .sidebar .season-chooser ul li.arrow {
   font-size: 20px;
@@ -2860,10 +2860,10 @@ body #search-dropdown .footer-container .icons .icon-container .icon-info {
   background: rgba(138, 90, 171, 0.7) !important
 }
 
-.sidebar .episodes-list li:not(.ads):focus {
+/* .sidebar .episodes-list li:not(.ads):focus {
   outline: 1px solid #fff;
   outline-offset: -1px
-}
+} */
 
 .sidebar .episodes-list li.watched:after {
   content: '';
@@ -8518,7 +8518,7 @@ input.search {
 
 #discover .filter .type li.selected,
 #discover .filter .sort li.selected {
-  background-color: black
+  background-color: #8A5AAB
 }
 
 #discover .filter .sort li {
