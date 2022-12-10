@@ -30,4 +30,5 @@ you're free to improve it and make a [pull request](https://github.com/REVENGE97
 
 
 ## Todo
-might switch to [stremio web v5](https://github.com/Stremio/stremio-web)
+- might switch to [stremio web v5](https://github.com/Stremio/stremio-web)
+- Updater
