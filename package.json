@@ -11,7 +11,7 @@
     "package-all": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=all --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-win32": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-macos": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=darwin --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
-    "package-linux": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=linux --arch=arm64 --prune=true --out=release-builds --icon=./images/icon.ico"
+    "package-linux": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=linux --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico"
   },
   "repository": "https://github.com/REVENGE977/stremio-enhanced.git",
   "author": "REVENGE",
