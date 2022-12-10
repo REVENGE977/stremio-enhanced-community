@@ -9,6 +9,7 @@ it runs the stremio streaming server and opens this [url](https://app.strem.io/s
 
 with this project you can make stremio look like this:
 ![screenshot](https://github.com/REVENGE977/stremio-enhanced/raw/main/images/amoled_screenshot.png)
+![settings_screenshot](https://github.com/REVENGE977/stremio-enhanced/raw/main/images/settings_screenshot.png)
 
 ## Downloads
 you can download the latest version from [here](https://github.com/REVENGE977/stremio-enhanced/releases)
