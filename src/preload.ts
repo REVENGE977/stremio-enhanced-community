@@ -1,6 +1,6 @@
 import * as electron from "electron";
 import { exec } from "child_process";
-import { readdirSync, readFileSync } from "original-fs";
+import { readdirSync, readFileSync } from "fs";
 
 /*
     angular.element($0).scope().episodesBySeason(angular.element($0).scope().info, seasonNumber)

@@ -64,6 +64,10 @@
   src: url("https://app.strem.io/shell-v4.4/fonts/Lato-Light.ttf") format('truetype')
 }
 
+#library .items li:hover {
+  transform: scale(1.1);
+}
+
 h1 {
   font: 24px/22px LatoLight, Arial, Helvetica, sans-serif;
   font-weight: 100;
@@ -407,9 +411,9 @@ button[disabled],
 }
 
 .button-b:focus:not([disabled]),
-.button:focus:not([disabled]) {
+/* .button:focus:not([disabled]) {
   outline: 3px solid
-}
+} */
 
 .bodyTop {
   top: 0 !important
@@ -476,12 +480,12 @@ button[disabled],
 
 ::-webkit-scrollbar-track {
   width: 7px;
-  background: black
+  background: #181726
 }
 
 ::-webkit-scrollbar-track:horizontal {
   height: 7px;
-  background: black
+  background: #181726
 }
 
 ::-webkit-scrollbar-thumb {
@@ -1112,7 +1116,7 @@ body .addons-handle .tab:hover {
 body #header .tab.selected,
 body .player-handle .tab.selected,
 body .addons-handle .tab.selected {
-  background-color: black;
+  background-color: #8A5AAB;
 }
 
 body #header .tab.selected .icon,
@@ -3302,10 +3306,10 @@ body #search-dropdown .footer-container .icons .icon-container .icon-info {
   background-color: #22b467
 }
 
-.modal-light-center-container .buttons .button:focus {
+/* .modal-light-center-container .buttons .button:focus {
   outline: 3px solid;
   outline-offset: -4px
-}
+} */
 
 .loader2 {
   position: relative;
@@ -5506,10 +5510,10 @@ input:checked+.slider:before {
   outline: none;
 }
 
-.stream-item:focus .streams-holder {
+/* .stream-item:focus .streams-holder {
   outline: 3px solid #fff;
   outline-offset: -3px
-}
+} */
 
 .stream-item:hover,
 .stream-item:focus {
@@ -6089,11 +6093,11 @@ input:checked+.slider:before {
 .modal-dialog .modal-container .buttons-container .modal-button:not(.accent):hover {
   background-color: rgba(0, 0, 0, 0.1)
 }
-
+/* 
 .modal-dialog .modal-container .buttons-container .modal-button:focus {
   outline: 3px solid;
   outline-offset: -4px
-}
+} */
 
 #detailWrapper {
   position: fixed;
@@ -6652,9 +6656,9 @@ input:checked+.slider:before {
   filter: brightness(1.2)
 }
 
-#detail .addons-catalogue-link a:focus {
+/* #detail .addons-catalogue-link a:focus {
   outline: 3px solid
-}
+} */
 
 #detail .play-button {
   position: absolute;
@@ -7461,10 +7465,10 @@ input.search {
   background-color: #22b467
 }
 
-#addonPromptModal .buttons .button:focus {
+/* #addonPromptModal .buttons .button:focus {
   outline: 3px solid;
   outline-offset: -4px
-}
+} */
 
 #addonsCatalog {
   overflow: auto;
@@ -7553,10 +7557,10 @@ input.search {
   background-color: black
 }
 
-#addonsCatalog .filter .type li:focus,
+/* #addonsCatalog .filter .type li:focus,
 #addonsCatalog .filter .sort li:focus {
   outline: 3px solid #fff
-}
+} */
 
 #addonsCatalog .filter .type li.selected,
 #addonsCatalog .filter .sort li.selected {
@@ -7578,9 +7582,9 @@ input.search {
   outline: none;
 }
 
-#addonsCatalog .filter .addon-search:focus {
+/* #addonsCatalog .filter .addon-search:focus {
   outline: 3px solid #fff
-}
+} */
 
 #addonsCatalog .filter .addon-search .icon {
   color: #8ca3dc;
@@ -7693,9 +7697,9 @@ input.search {
   background-color: black;
 }
 
-.addon:focus {
+/* .addon:focus {
   outline: 3px solid #fff
-}
+} */
 
 .addon .desc-row .icon {
   font-size: .8em;
@@ -8507,10 +8511,10 @@ input.search {
 }
 
 #discover .filter .type li:focus,
-#discover .filter .sort li:focus {
+/* #discover .filter .sort li:focus {
   outline: 3px solid #fff;
   outline-offset: -3px
-}
+} */
 
 #discover .filter .type li.selected,
 #discover .filter .sort li.selected {
@@ -8553,10 +8557,10 @@ input.search {
   background-color: rgba(99, 63, 126, 0.3)
 }
 
-#discover .genre-select li:focus {
+/* #discover .genre-select li:focus {
   outline: 3px solid #fff;
   outline-offset: -3px
-}
+} */
 
 #discover .holder .items {
   position: absolute;
@@ -8598,6 +8602,7 @@ input.search {
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
   outline: none;
+  transition: transform 0.2s;
 }
 
 #discover .holder .items li .icon-ic_play {
@@ -8625,15 +8630,16 @@ input.search {
 #discover .holder .items li:hover {
   outline: 1px solid #fff;
   z-index: 10;
+  transform: scale(1.1);
 }
 
 #discover .holder .items li:hover .thumb.vignette:after {
   background: none
 }
 
-#discover .holder .items li.selected {
+/* #discover .holder .items li.selected {
   outline: 4px solid #fff;
-}
+} */
 
 #discover .holder .items li.selected .thumb.vignette:after {
   background: none
@@ -9064,15 +9070,15 @@ input.search {
 
 #library .lib-type li:hover,
 #library .sort-filter li:hover {
-  background-color: black;
+  background-color: #8A5AAB;
   outline: 0
 }
 
-#library .lib-type li:focus,
+/* #library .lib-type li:focus,
 #library .sort-filter li:focus {
   outline: 3px solid;
   outline-offset: -3px
-}
+} */
 
 #library .lib-type {
   left: 20px;
@@ -9087,7 +9093,7 @@ input.search {
 }
 
 #library .lib-type li.selected {
-  background-color: black;
+  background-color: #8A5AAB;
   color: #fff
 }
 
@@ -9178,9 +9184,9 @@ input.search {
 
 #library .items li.selected,
 #library .items li:focus,
-#library .items li:hover {
+/* #library .items li:hover {
   outline: 3px solid #fff
-}
+} */
 
 @media all and (max-width:700px) {
   .sort-filter {
@@ -9531,10 +9537,10 @@ input.search {
 }
 
 #calendar li:focus,
-#calendar #future-episodes .episode:focus {
+/* #calendar #future-episodes .episode:focus {
   outline: 3px solid #fff;
   outline-offset: -3px
-}
+} */
 
 #board li:focus {
   outline: none
@@ -9597,9 +9603,9 @@ input.search {
   outline: 1px solid #fff
 }
 
-#board .recent-board .resume:focus {
+/* #board .recent-board .resume:focus {
   outline: 3px solid #fff
-}
+} */
 
 #board .recent-board .resume .thumb.vignette:after {
   background: none
@@ -9920,9 +9926,9 @@ input.search {
 }
 
 #board .notif:focus .thumb,
-#board .board-item:focus .thumb {
+/* #board .board-item:focus .thumb {
   outline: 3px solid #fff
-}
+} */
 
 #board .notif .close {
   position: absolute;
@@ -10250,6 +10256,11 @@ input.search {
   display: inline-block;
   white-space: normal;
   float: none;
+  transition: transform 0.2s;
+}
+
+#board .board-row li:hover {
+  transform: scale(1.1);
 }
 
 #board .board-row li:last-child {
@@ -10530,10 +10541,10 @@ input.search {
   height: 100%;
 }
 
-.settings-container [tabindex]:focus {
+/* .settings-container [tabindex]:focus {
   outline: 3px solid #fff;
   outline-offset: -3px
-}
+} */
 
 .settings-container h2,
 .settings-container h3 {
@@ -10583,7 +10594,7 @@ input.search {
 }
 
 .settings-container .sections a.active {
-  background-color: black
+  background-color: #8A5AAB
 }
 
 .settings-container .settings-panel {
