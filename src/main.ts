@@ -34,11 +34,11 @@ function RunStreamServer() {
 }
 
 app.on("ready", () => {
-    if(existsSync(`${process.env.APPDATA}\\stremio-enhanced`) || existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`) || existsSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`)) {
+    if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`) || !existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`) || !existsSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`)) {
         try {
-            if(existsSync(`${process.env.APPDATA}\\stremio-enhanced`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced`);
-            if(existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`);
-            if(existsSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`);
+            if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced`);
+            if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`);
+            if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`);
         }catch {}
     }
 
