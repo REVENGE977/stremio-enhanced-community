@@ -74,7 +74,7 @@ window.addEventListener("DOMContentLoaded", () => {
     
                 settings.addButton("Open Themes Folder", "openthemesfolderBtn", "#enhanced > div:nth-child(2)");
                 settings.addButton("Open Plugins Folder", "openpluginsfolderBtn", "#enhanced > div:nth-child(3)");
-                document.querySelector("#enhanced > div:nth-child(4)").innerHTML += `<h4>Developed By: <p style="display: inline !important;"><a href="https://github.com/REVENGE977" target="_blank" rel="noreferrer">REVENGE977</a></p><br>Version: v0.1</h4>`
+                document.querySelector("#enhanced > div:nth-child(4)").innerHTML += `<h4>Developed By: <p style="display: inline !important;"><a href="https://github.com/REVENGE977" target="_blank" rel="noreferrer">REVENGE977</a></p><br>Version: v0.2</h4>`
     
                 //default theme
                 document.querySelector("#enhanced > div:nth-child(2)").innerHTML += `<div class="option custom-space"><div class="setting"><label translate="THEME" class="ng-scope ng-binding">Default</label><div class="ro-copy-text-container"><button id="Default" tabindex="-1" translate="apply" onclick="applyTheme('Default')" class="button-b ng-scope ng-binding" ${localStorage.getItem("currentTheme") == "Default" ? "disabled" : ""}>${localStorage.getItem("currentTheme") == "Default" ? "Applied" : "Apply"}</button></div></div></div>`
