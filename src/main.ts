@@ -26,7 +26,10 @@ function createWindow() {
         return { action: "deny" };
     });
 
-    //mainWindow.webContents.openDevTools();
+    if(process.argv[3] == "--devtools") { 
+        console.log("[ INFO ] Opening devtools."); 
+        mainWindow.webContents.openDevTools(); 
+    } 
 }
 
 function RunStreamServer() {

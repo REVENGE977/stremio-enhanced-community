@@ -7,13 +7,17 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "dev": "cls && yarn build && nodemon --exec electron ./dist/main.js",
+    "dev": "cls && yarn build && nodemon --exec electron --log-level=3 ./dist/main.js --devtools",
     "package-all": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=all --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-win32": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-macos": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=darwin --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-linux": "yarn build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=linux --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico"
   },
   "repository": "https://github.com/REVENGE977/stremio-enhanced.git",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "author": "REVENGE",
   "license": "MIT",
   "devDependencies": {
@@ -29,6 +33,8 @@
   "dependencies": {
     "@electron/remote": "^2.0.8",
     "@types/express": "^4.17.14",
+    "electron-prompt": "^1.7.0",
+    "electron-updater": "^5.3.0",
     "express": "^4.18.2"
   },
   "files": [
