@@ -37,7 +37,7 @@ As of version v0.3 you are required to provide meta data for the plugin, here is
 /**
  * @name YourPluginNameHere
  * @description What does your plugin do?
- * @updateUrl https://raw.githubusercontent.com/REVENGE977/BetterEpisodeList/main/BetterEpisodeList.plugin.js
+ * @updateUrl your plugin's raw file url for update checking. (currently plugin update checking isn't implemented, so you can just keep this empty.)
  * @version 1.0.0
  * @author AuthorName
  */
