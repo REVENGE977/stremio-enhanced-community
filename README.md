@@ -55,4 +55,5 @@ You just take the stock stremio css file and modify it. The stock css file can b
 - Added the hotkey Ctrl+Shift+I to open the devtools.
 - Added the flag --no-stremio-service for users who don't want to use stremio service and override the streaming server URL from the settings.
 - Now sets the background to black on startup, so you don't get flashbanged on launch.
+
 *Note: I've only tested the update on Windows.*
