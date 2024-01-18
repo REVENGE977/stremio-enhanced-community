@@ -1,3 +1,12 @@
+/**
+ * @name SlashToSearch
+ * @description Whenever the slash key is pressed while in the main menu, the search bar will be focused.
+ * @website https://github.com/REVEMGE977/BetterEpisodeList
+ * @updateUrl https://raw.githubusercontent.com/REVENGE977/BetterEpisodeList/main/BetterEpisodeList.plugin.js
+ * @version 1.0.0
+ * @author REVENGE977
+ */
+
 document.addEventListener("keyup", (e) => {
     if(e.key == "/") {
         console.log("[ SLASHTOSEARCH ] slash pressed, focusing searchbar.")

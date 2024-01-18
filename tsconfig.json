@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
     "lib": ["es5", "es6", "dom"],
-    "module": "commonjs",
+    "module": "CommonJS",
     "noImplicitAny": true,
+    "downlevelIteration": true,
     "sourceMap": true,
+    "types": ["express"],
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "esModuleInterop": true,
   },
   "include": [
     "src/**/*"
