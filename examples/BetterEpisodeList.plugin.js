@@ -1,7 +1,7 @@
 /**
  * @name BetterEpisodeList
  * @description Adds a search bar to search episodes either by name or number, and adds an option to show all episodes in one list.
- * @updateUrl https://raw.githubusercontent.com/REVENGE977/BetterEpisodeList/main/BetterEpisodeList.plugin.js
+ * @updateUrl none
  * @version 1.0.0
  * @author REVENGE977
  */

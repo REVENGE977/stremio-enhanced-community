@@ -1,8 +1,7 @@
 /**
  * @name SlashToSearch
  * @description Whenever the slash key is pressed while in the main menu, the search bar will be focused.
- * @website https://github.com/REVEMGE977/BetterEpisodeList
- * @updateUrl https://raw.githubusercontent.com/REVENGE977/BetterEpisodeList/main/BetterEpisodeList.plugin.js
+ * @updateUrl none
  * @version 1.0.0
  * @author REVENGE977
  */
