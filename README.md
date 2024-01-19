@@ -45,6 +45,7 @@ As of version v0.3 you are required to provide meta data for the plugin, here is
 ## How do I make my own theme?
 You just take the stock stremio css file and modify it. The stock css file can be found [here](https://github.com/REVENGE977/stremio-enhanced-community/blob/main/examples/stockstremio_unminified.theme.css). You can also just take the default theme yourself, by opening devtools and going to the Source tab, and there you will find the css file for the default theme. You can take it and put it [here](https://www.unminify2.com/) to unminify it and make it easier to read and modify.
 
+*You are also required to provide metadata in your theme. The same way as plugins from the example above.*
 ## Update v0.3
 - Now relies on [Stremio Service](https://github.com/Stremio/stremio-service) to run (if stremio service isn't installed it will guide the user to install it). This is means you will get a similar streaming experience to the official app.
 - Checks if the installed version is the latest version or not. Startup checking can be disabled from the settings (not tested yet).
