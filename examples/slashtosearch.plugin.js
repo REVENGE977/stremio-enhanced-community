@@ -1,7 +1,7 @@
 /**
  * @name SlashToSearch
  * @description Whenever the slash key is pressed while in the main menu, the search bar will be focused.
- * @updateUrl none
+ * @updateUrl https://raw.githubusercontent.com/REVENGE977/SlashToSearch/main/SlashToSearch.plugin.js
  * @version 1.0.0
  * @author REVENGE977
  */

@@ -1,12 +1,4 @@
-
-interface MetaData {
-    name:string, 
-    description:string,
-    author:string
-    source:string,
-    updateUrl:string,
-    version:string
-}
+import MetaData from "./metadata"
 
 export class Settings {
     
@@ -26,8 +18,11 @@ export class Settings {
     public static addItem(type: "theme" | "plugin", fileName:string, metaData:MetaData) {
         if(type == "theme") {
             document.querySelector(`#enhanced > div:nth-child(2)`).innerHTML += `
-            <div class="pure-u-1-4 addon ng-scope installed">
-                <div><button id="${fileName}" style="float:right; height: 2.5rem;" tabindex="-1" translate="apply" onclick="applyTheme('${fileName}')" class="button-b ng-scope ng-binding" ${localStorage.getItem("currentTheme") == fileName ? "disabled" : ""}>${localStorage.getItem("currentTheme") == fileName ? "Applied" : "Apply"}</button></div>
+            <div class="pure-u-1-4 addon ng-scope installed" name="${fileName}-box">
+                <div>
+                    <button id="${fileName}" style="float:right; height: 2.5rem;" tabindex="-1" translate="apply" onclick="applyTheme('${fileName}')" class="button-b ng-scope ng-binding" ${localStorage.getItem("currentTheme") == fileName ? "disabled" : ""}>${localStorage.getItem("currentTheme") == fileName ? "Applied" : "Apply"}</button>
+                    <button id="${fileName}-update" style="float:right; height: 2.5rem; display:none; color: #f5bf42;" tabindex="-1" translate="update" class="button button-s ng-scope ng-binding">Update</button>
+                </div>
                 <div class="title ng-binding">${metaData.name}</div>
                 <div class="footer">
                     <div class="date ng-isolate-scope"><b>Description:</b> ${metaData.description}</div>
@@ -40,7 +35,10 @@ export class Settings {
             let enabledPlugins = JSON.parse(localStorage.getItem("enabledPlugins"));
 
             document.querySelector(`#enhanced > div:nth-child(3)`).innerHTML += `
-            <div class="pure-u-1-4 addon ng-scope" style="margin-top: 1rem;">
+            <div class="pure-u-1-4 addon ng-scope" style="margin-top: 1rem;" name="${fileName}-box">
+                <div>
+                    <button id="${fileName}-update" style="float:right; height: 2.5rem; display:none; color: #f5bf42;" tabindex="-1" translate="update" class="button button-s ng-scope ng-binding">Update</button>
+                </div>
                 <div class="stremio-checkbox ng-isolate-scope"><div class="option option-toggle"><input style="float:right;" class="plugin" name="${fileName}" type="checkbox" tabindex="-1" ${enabledPlugins.includes(fileName) ? "checked=\"checked\"" : ""}></div>
                 <div class="title ng-binding">${metaData.name}</div>
                 <div class="footer">
@@ -53,22 +51,8 @@ export class Settings {
         }
     }
 
-    public static waitForElm(selector:string) {
-        return new Promise(resolve => {
-            if (document.querySelector(selector)) return resolve(document.querySelector(selector));
-    
-            const observer = new MutationObserver(() => {
-                if (document.querySelector(selector)) {
-                    resolve(document.querySelector(selector));
-                    observer.disconnect();
-                }
-            });
-    
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
+    public static removeItem(fileName:string) {
+        document.getElementsByName(`${fileName}-box`)[0].remove();
     }
 
     public static activeSection(element:Element) {

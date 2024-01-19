@@ -1,7 +1,7 @@
 /**
  * @name BetterEpisodeList
  * @description Adds a search bar to search episodes either by name or number, and adds an option to show all episodes in one list.
- * @updateUrl none
+ * @updateUrl https://raw.githubusercontent.com/REVENGE977/BetterEpisodeList/main/BetterEpisodeList.plugin.js
  * @version 1.0.0
  * @author REVENGE977
  */
@@ -65,7 +65,7 @@ function addSearchBar() {
     let inputElm = document.createElement('input');
     inputElm.setAttribute("id", "episode-search-field");
     inputElm.setAttribute("tabindex", "-1");
-    inputElm.setAttribute("placeholder", "Search episode by name or number");
+    inputElm.setAttribute("placeholder", "Search episode by title or number.");
     inputElm.setAttribute("type", "text");
     inputElm.setAttribute("class", "ng-pristine ng-valid ng-isolate-scope ng-empty ng-touched");
     inputElm.setAttribute("style", `
@@ -176,6 +176,8 @@ function hideAddedEpisodes(){
 }
 
 function searchEpisodes(query) {
+    const seasonSelectMenu = document.getElementsByName("season")[0];
+
     let liElements = document.querySelectorAll('li');
     let allEpisodes = Array.from(liElements).filter((liElement) => {
         return liElement.querySelector('div.episode-details') !== null;
@@ -184,7 +186,9 @@ function searchEpisodes(query) {
     allEpisodes.forEach((episode) => {
         let titleAttribute = episode.getAttribute('title').toLowerCase();
         if (titleAttribute && titleAttribute.includes(query.toLowerCase())) {
-            episode.style.display = 'flex';
+            if(seasonSelectMenu.value != "all" && episode.getAttribute("name") == "allEpisodesPlugin-episode") {
+                episode.style.display = 'none';
+            } else episode.style.display = 'flex';
         } else {
             episode.style.display = 'none';
         }

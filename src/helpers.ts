@@ -47,6 +47,32 @@ class Helpers {
             return null;
         }
     }
+
+    extractMetadataFromText(textContent: string) {
+        try {
+            const commentBlockRegex = /\/\*\*([\s\S]*?)\*\//;
+            const commentBlockMatch = textContent.match(commentBlockRegex);
+    
+            if (commentBlockMatch && commentBlockMatch[1]) {
+                const metadataRegex = /@(\w+)\s+([^\n\r]+)/g;
+                const metadataMatches = commentBlockMatch[1].matchAll(metadataRegex);
+    
+                const metadata: any = {};
+    
+                for (const match of metadataMatches) {
+                    metadata[match[1].trim()] = match[2].trim();
+                }
+    
+                return metadata;
+            } else {
+                console.error('Comment block not found in the provided text');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error processing the provided text:', error);
+            return null;
+        }
+    }
     
     
     checkExecutableExists() {
@@ -100,6 +126,24 @@ class Helpers {
             console.error('Error displaying alert:', error);
             return -1; 
         }
+    }
+
+    waitForElm(selector:string) {
+        return new Promise(resolve => {
+            if (document.querySelector(selector)) return resolve(document.querySelector(selector));
+    
+            const observer = new MutationObserver(() => {
+                if (document.querySelector(selector)) {
+                    resolve(document.querySelector(selector));
+                    observer.disconnect();
+                }
+            });
+    
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
     }
     
     async isProcessRunning(processName: string) {

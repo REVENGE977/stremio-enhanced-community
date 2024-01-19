@@ -24,12 +24,12 @@ async function createWindow() {
     mainWindow.loadURL("https://app.strem.io/shell-v4.4/?streamingServer=http%3A%2F%2F127.0.0.1%3A11470#/");
     helpers.setMainWindow(mainWindow);
 
-    ipcMain.on('update-check-on-startup', async (event:any, checkForUpdatesOnStartup) => {
+    ipcMain.on('update-check-on-startup', async (_, checkForUpdatesOnStartup) => {
         console.log("[ INFO ] Checking for updates on startup: " + checkForUpdatesOnStartup);
         if(checkForUpdatesOnStartup == "true") await Updater.checkForUpdates(false);
     });
 
-    ipcMain.on('update-check-userrequest', async (event:any) => {
+    ipcMain.on('update-check-userrequest', async () => {
         console.log("[ INFO ] Checking for updates on user request.");
         await Updater.checkForUpdates(true);
     });
@@ -102,10 +102,18 @@ app.on("window-all-closed", () => {
     }
 });
 
-app.on('browser-window-created', (e:any, window) => {
+app.on('browser-window-created', (_, window) => {
     window.webContents.on('before-input-event', (event:any, input:any) => {
         if (input.control && input.shift && input.key === 'I') {
             window.webContents.toggleDevTools();
+            event.preventDefault();
+        }
+
+        if (input.control && input.key === '=') {
+            mainWindow.webContents.zoomFactor += 0.1;
+            event.preventDefault();
+        } else if (input.control && input.key === '-') {
+            mainWindow.webContents.zoomFactor -= 0.1;
             event.preventDefault();
         }
     });

@@ -1,7 +1,9 @@
 import { Settings } from "./settings";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { exec } from "child_process";
 import properties from "./properties"
+import helpers from "./helpers"
+import MetaData from "./metadata";
 
 class ModManager {
     static loadPlugin(pluginName:string) {
@@ -63,37 +65,6 @@ class ModManager {
         })
     }
         
-    public static handleScroll(): void {
-        console.log("handling scroll")
-        document.addEventListener("scroll", () => {
-            let generalSection:HTMLElement = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(1)');
-            let playerSection:HTMLElement = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(2)');
-            let streamingSection:HTMLElement = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(3)');
-            let shortcutsSection:HTMLElement = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(4)');
-            //let enhancedSection:HTMLElement = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(5)');
-            
-            if (window.scrollY >= generalSection.getBoundingClientRect().top) {
-                Settings.activeSection(generalSection);
-            } 
-            
-            if (window.scrollY >= playerSection.getBoundingClientRect().top) {
-                Settings.activeSection(playerSection);
-            } 
-            
-            if (window.scrollY >= streamingSection.getBoundingClientRect().top) {
-                Settings.activeSection(streamingSection);
-            } 
-            
-            if (window.scrollY >= shortcutsSection.getBoundingClientRect().top) {
-                Settings.activeSection(shortcutsSection);
-            } 
-            
-            // if (this.isElementInViewport(enhancedSection)) {
-            //     Settings.activeSection(enhancedSection);
-            // } 
-        });
-    }
-        
     static scrollListener() {
         let generalSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(1)');
         generalSection.addEventListener("click", () => {
@@ -150,9 +121,40 @@ class ModManager {
         document.body.appendChild(script);
     }
     
-    static checkForItemUpdates() {
-        
+    static async checkForItemUpdates(itemFile: string) {
+        let pluginOrTheme:'theme'|'plugin';
+        let itemBox = document.getElementsByName(`${itemFile}-box`)[0];
+        if(!itemBox) return console.log("item box not found.");
+
+
+        if(itemFile.endsWith(".theme.css")) pluginOrTheme = "theme";
+        else pluginOrTheme = "plugin";
+
+        let itemPath = `${pluginOrTheme == "theme" ? properties.themesPath : properties.pluginsPath}\\${itemFile}`;
+
+        let installedItemMetaData:MetaData = helpers.extractMetadataFromFile(itemPath);
+        if (installedItemMetaData && Object.keys(installedItemMetaData).length > 0) {
+            let updateUrl = installedItemMetaData.updateUrl;
+            if(updateUrl) {
+                let request = await fetch(updateUrl);
+                let response = await request.text();
+                
+                if(request.status == 200) {
+                    let extractedMetaData:MetaData = helpers.extractMetadataFromText(response);
+                    if(extractedMetaData.version > installedItemMetaData.version) {
+                        console.log(`[ ${installedItemMetaData.name} ] An update exists. New version: ${extractedMetaData.version} | Current version: ${installedItemMetaData.version}`);
+
+                        document.getElementById(`${itemFile}-update`).style.display = "flex";
+                        document.getElementById(`${itemFile}-update`).addEventListener("click", () => {
+                            writeFileSync(itemPath, response, 'utf-8');
+                            Settings.removeItem(itemFile);
+                            Settings.addItem(pluginOrTheme, itemFile, extractedMetaData);
+                        })
+                    }
+                }
+            }
+        }
     }
 }
     
-    export default ModManager;
+export default ModManager;

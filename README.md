@@ -37,8 +37,8 @@ As of version v0.3 you are required to provide meta data for the plugin, here is
 /**
  * @name YourPluginNameHere
  * @description What does your plugin do?
- * @updateUrl your plugin's raw file url for update checking. (currently plugin update checking isn't implemented, so you can just keep this empty.)
- * @version 1.0.0
+ * @updateUrl your plugin's raw file url for update checking.
+ * @version VersionHere (ex: 1.0.0)
  * @author AuthorName
  */
 ```
@@ -55,5 +55,11 @@ You just take the stock stremio css file and modify it. The stock css file can b
 - Added the hotkey Ctrl+Shift+I to open the devtools.
 - Added the flag --no-stremio-service for users who don't want to use stremio service and override the streaming server URL from the settings.
 - Now sets the background to black on startup, so you don't get flashbanged on launch.
+
+*Note: I've only tested the update on Windows.*
+
+## Update v0.4
+- Implemented a plugin/theme update checker.
+- Added hotkeys for zooming in/out Ctrl+= and Ctrl+-.
 
 *Note: I've only tested the update on Windows.*

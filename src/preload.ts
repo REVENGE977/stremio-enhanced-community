@@ -9,7 +9,7 @@ import Updater from "./updater";
 
 window.addEventListener("DOMContentLoaded", () => {
     //removes the toast that appears on startup automatically.
-    Settings.waitForElm('#toast-container > div > div > button').then((elm:HTMLElement) => {
+    Helpers.waitForElm('#toast-container > div > div > button').then((elm:HTMLElement) => {
         elm.click();
     })
 
@@ -22,7 +22,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         let link = document.querySelector(properties.themeLinkSelector);
         properties.defaultThemeFileName = link.getAttribute("href");
-        if(currentTheme != "Default" && existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes\\${currentTheme}`)) {
+        if(currentTheme != "Default" && existsSync(`${properties.themesPath}\\${currentTheme}`)) {
             link.setAttribute("href", `http://localhost:3000/themes/${currentTheme}`);
         } else {
             link.setAttribute("href", properties.defaultThemeFileName);
@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
     } else localStorage.setItem("currentTheme", "Default");
 
     //loads enabled plugins.
-    let pluginsToLoad = readdirSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`).filter((fileName) => { return fileName.endsWith(".plugin.js") });
+    let pluginsToLoad = readdirSync(`${properties.pluginsPath}`).filter((fileName) => { return fileName.endsWith(".plugin.js") });
     pluginsToLoad.forEach(plugin => {
         let enabledPlugins = JSON.parse(localStorage.getItem("enabledPlugins"));
         if(enabledPlugins.includes(plugin)) ModManager.loadPlugin(plugin);
@@ -41,11 +41,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 	[settingsBtn, navBarSettingsBtn].forEach(element => {
         element.addEventListener("click", e => {
-            Settings.waitForElm('#settingsPage > div.sections > nav').then(() => {
+            Helpers.waitForElm('#settingsPage > div.sections > nav').then(() => {
                 if(document.querySelector(`a[href="#settings-enhanced"]`)) return;
                 ModManager.addApplyThemeFunction();
-                let themesList = readdirSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`).filter((fileName) => { return fileName.endsWith(".theme.css") })
-                let pluginsList = readdirSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`).filter((fileName) => { return fileName.endsWith(".plugin.js") })
+
+                let themesList = readdirSync(`${properties.themesPath}`).filter((fileName) => { return fileName.endsWith(".theme.css") })
+                let pluginsList = readdirSync(`${properties.pluginsPath}`).filter((fileName) => { return fileName.endsWith(".plugin.js") })
                 
                 //sets the #enhanced section as the last section instead of #settings-shortcuts.
                 document.querySelector("#settings-shortcuts").classList.remove("last");
@@ -87,20 +88,21 @@ window.addEventListener("DOMContentLoaded", () => {
     
                 themesList.forEach(theme => {
                     //document.querySelector("#enhanced > div:nth-child(2)").innerHTML += `<div class="option custom-space"><div class="setting"><label translate="THEME" class="ng-scope ng-binding">${theme}</label><div class="ro-copy-text-container"><button id="${theme}" tabindex="-1" translate="apply" onclick="applyTheme('${theme}')" class="button-b ng-scope ng-binding" ${localStorage.getItem("currentTheme") == theme ? "disabled" : ""}>${localStorage.getItem("currentTheme") == theme ? "Applied" : "Apply"}</button></div></div></div>`
-                    console.log("reading metadata for " + theme)
-                    let readMetaData = Helpers.extractMetadataFromFile(`${process.env.APPDATA}\\stremio-enhanced\\themes\\${theme}`);
+                    let readMetaData = Helpers.extractMetadataFromFile(`${properties.themesPath}\\${theme}`);
 
                     if (readMetaData && Object.keys(readMetaData).length > 0) {
                         Settings.addItem("theme", theme, readMetaData);
+                        if(readMetaData.updateUrl != "none") ModManager.checkForItemUpdates(theme);
                     }
                 })
     
                 pluginsList.forEach(plugin => {
                     //document.querySelector("#enhanced > div:nth-child(3)").innerHTML += `<div class="setting"><div class="stremio-checkbox ng-isolate-scope"><div class="option option-toggle"><input class="plugin" name="${plugin}" type="checkbox" tabindex="-1" ${enabledPlugins.includes(plugin) ? "checked=\"checked\"" : ""}><label class="ng-binding">${plugin}</label></div></div></div>`
-                    let readMetaData = Helpers.extractMetadataFromFile(`${process.env.APPDATA}\\stremio-enhanced\\plugins\\${plugin}`);
+                    let readMetaData = Helpers.extractMetadataFromFile(`${properties.pluginsPath}\\${plugin}`);
 
                     if (readMetaData && Object.keys(readMetaData).length > 0) {
                         Settings.addItem("plugin", plugin, readMetaData);
+                        if(readMetaData.updateUrl != "none") ModManager.checkForItemUpdates(plugin);
                     }
                 })
     
@@ -108,7 +110,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 ModManager.scrollListener();
                 ModManager.openThemesFolder();
                 ModManager.openPluginsFolder();
-                ModManager.handleScroll();
             });
         })
     })
