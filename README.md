@@ -5,7 +5,7 @@
 <h1 align="center">[WIP] Stremio Enhanced</h1>
 
 ## What is stremio enhanced ?
-Stremio Enhanced is an Electron-based [Stremio](https://www.stremio.com/) client with plugins and themes support, it runs the [Stremio Service](https://github.com/Stremio/stremio-service) automatically and loads [the web version of Stremio](https://app.strem.io/shell-v4.4/).
+Stremio Enhanced is an Electron-based [Stremio](https://www.stremio.com/) client with plugins and themes support. It runs the [Stremio Service](https://github.com/Stremio/stremio-service) automatically and loads [the web version of Stremio](https://app.strem.io/shell-v4.4/).
 
 
 With this project you can make stremio look like this, for example:
