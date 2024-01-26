@@ -208,7 +208,7 @@ class Helpers {
 
                         ipcRenderer.send("discordrpc-update", { 
                             details: `Watching ${showName}`, 
-                            state: `Season: ${episodeSeason[2]}, Episode: ${episodeSeason[1]}`, 
+                            state: `Season: ${episodeSeason[1]}, Episode: ${episodeSeason[2]}`, 
                             startTimestamp: currentTimestamp,
                             largeImageKey: "1024stremio",
                             largeImageText: "Stremio Enhanced",
@@ -221,7 +221,7 @@ class Helpers {
                     const handlePausing = () => {
                         ipcRenderer.send("discordrpc-update", { 
                             details: `Paused ${showName} at ${this.formatTime(video.currentTime)}`, 
-                            state: `Season: ${episodeSeason[2]}, Episode: ${episodeSeason[1]}`, 
+                            state: `Season: ${episodeSeason[1]}, Episode: ${episodeSeason[2]}`, 
                             largeImageKey: "1024stremio",
                             largeImageText: "Stremio Enhanced",
                             smallImageKey: "pause",
