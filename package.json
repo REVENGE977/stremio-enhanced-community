@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "dev": "cls && npm run build && nodemon --exec electron --log-level=3 ./dist/main.js --devtools",
+    "dev": "cls && npm run build && npx electron --log-level=3 ./dist/main.js --devtools",
     "package-all": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=all --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-win32": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-macos": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=darwin --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
@@ -23,6 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/angular": "^1.8.9",
+    "@types/discord-rpc": "^4.0.8",
     "@types/electron": "^1.6.10",
     "@types/express": "^4.17.21",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -31,14 +32,16 @@
     "electron-builder": "^23.6.0",
     "electron-packager": "^17.1.1",
     "eslint": "^7.32.0",
-    "nodemon": "^2.0.19",
     "typescript": "^4.7.2"
   },
   "dependencies": {
+    "@types/winston": "^2.4.4",
     "angular": "^1.8.3",
+    "discord-rpc": "^4.0.1",
     "electron-prompt": "^1.7.0",
     "electron-updater": "^5.3.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "winston": "^3.11.0"
   },
   "files": [
     "static/**/*",

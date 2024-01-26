@@ -5,17 +5,22 @@ import { mkdirSync, existsSync } from "fs";
 import express from "express";
 import helpers from './helpers';
 import Updater from "./updater";
+import Properties from "./properties";
+import DiscordPresence from "./discordpresence";
+import logger from "./logger";
+
 var mainWindow: BrowserWindow | null;
+var discordrpc: DiscordPresence | null;
 
 async function createWindow() {
     mainWindow = new BrowserWindow({
-        height: 850,
         webPreferences: {
             preload: join(__dirname, "preload.js"),
             webSecurity: false,
             nodeIntegration: true
         },
         width: 1500,
+        height: 850,
         icon: "./images/icon.ico",
         backgroundColor: '#000000'
     });
@@ -25,13 +30,29 @@ async function createWindow() {
     helpers.setMainWindow(mainWindow);
 
     ipcMain.on('update-check-on-startup', async (_, checkForUpdatesOnStartup) => {
-        console.log("[ INFO ] Checking for updates on startup: " + checkForUpdatesOnStartup);
+        logger.info(`Checking for updates on startup: ${checkForUpdatesOnStartup == "true" ? "enabled" : "disabled"}.`);
         if(checkForUpdatesOnStartup == "true") await Updater.checkForUpdates(false);
     });
 
     ipcMain.on('update-check-userrequest', async () => {
-        console.log("[ INFO ] Checking for updates on user request.");
+        logger.info("Checking for updates on user request.");
         await Updater.checkForUpdates(true);
+    });
+
+    ipcMain.on('discordrpc-status', async(_, status) => {
+        logger.info(`DiscordRPC is set to ${status == "true" ? "enabled" : "disabled"}`);
+        if(status == "true") {
+            discordrpc = new DiscordPresence();
+        } else {
+            if(discordrpc) {
+                discordrpc.stopActivity();
+            }
+        }
+    });
+
+    ipcMain.on('discordrpc-update', async (_, newDetails) => {
+        logger.info("Updating DiscordRPC.");
+        discordrpc.updateActivity(newDetails);
     });
 
     mainWindow.webContents.setWindowOpenHandler((edata:any) => {
@@ -40,30 +61,45 @@ async function createWindow() {
     });
     
     if(process.argv.includes("--devtools")) { 
-        console.log("[ INFO ] Opening devtools."); 
+        logger.info("Opening devtools."); 
         mainWindow.webContents.openDevTools(); 
     }
+
+    mainWindow.on('closed', () => {
+        killStremioService();
+    });
 }
 
-function RunStremioService(ServicePath: string) {
-    setTimeout(() => { exec(ServicePath) && console.log("[ INFO ] Stremio Service Started.") }, 0);
+function RunStremioService(servicePath: string) {
+    setTimeout(() => {
+        if(exec(servicePath)) {
+            logger.info("Stremio Service Started.");
+        }
+    }, 0);
+}
+
+function killStremioService() {        
+    try {
+        logger.info("Killing Stremio Service.")
+        exec("taskkill /F /IM stremio-service.exe && taskkill /F /IM stremio-runtime.exe");
+    }catch(e) {
+        logger.error(e);
+    }
 }
 
 app.on("ready", async () => {
-    console.log("[ INFO ] Running on NodeJS version: " + process.version)
-    if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`) || !existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`) || !existsSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`)) {
-        try {
-            if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced`);
-            if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced\\themes`);
-            if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins`);
-        }catch {}
-    }
+    logger.info("Running on NodeJS version: " + process.version)
+    try {
+        if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced`);
+        if(!existsSync(Properties.themesPath)) mkdirSync(Properties.themesPath);
+        if(!existsSync(Properties.pluginsPath)) mkdirSync(Properties.pluginsPath);
+    }catch {}
     
     const web = express();
     
     web.use(express.static(`${process.env.APPDATA}\\stremio-enhanced`));
     
-    web.listen(3000, () => console.log("[ INFO ] Listening on port 3000."));
+    web.listen(3000, () => logger.info("Listening on port 3000."));
     
     if(!process.argv.includes("--no-stremio-service")) {
         const stremioServicePath = helpers.checkExecutableExists();
@@ -81,13 +117,13 @@ app.on("ready", async () => {
         helpers.isProcessRunning("stremio-service")
         .then((result) => {
             if (result) {
-                console.log(`[ INFO ] Stremio Service is already running.`);
+                logger.info("Stremio Service is already running.");
             } else {
-                console.log(`[ INFO ] Stremio Service is not running, starting...`);
+                logger.info("Stremio Service is not running, starting...");
                 RunStremioService(stremioServicePath);
             }
-        }).catch((error) => console.error('Error checking process:', error));
-    } else console.log("[ INFO ] Launching without Stremio Service.");
+        }).catch((error) => logger.error('Error checking process: ' + error));
+    } else logger.info("Launching without Stremio Service.");
     
     createWindow();
     

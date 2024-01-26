@@ -4,6 +4,7 @@ import { exec } from "child_process";
 import properties from "./properties"
 import helpers from "./helpers"
 import MetaData from "./metadata";
+import logger from "./logger";
 
 class ModManager {
     static loadPlugin(pluginName:string) {
@@ -20,7 +21,7 @@ class ModManager {
             localStorage.setItem("enabledPlugins", JSON.stringify(enabledPlugins));
         }
         
-        console.log(`[ INFO ] plugin ${pluginName} loaded !`);
+        logger.info(`plugin ${pluginName} loaded !`);
     }
     
     static unloadPlugin(pluginName:string) {
@@ -30,7 +31,7 @@ class ModManager {
         enabledPlugins = enabledPlugins.filter((x:string) => x !== pluginName);
         localStorage.setItem("enabledPlugins", JSON.stringify(enabledPlugins));
         
-        console.log(`[ INFO ] plugin ${pluginName} unloaded !`);
+        logger.info(`plugin ${pluginName} unloaded !`);
     }
     
     
@@ -44,7 +45,7 @@ class ModManager {
                     this.loadPlugin(pluginCheckboxes[i].name)
                 } else {
                     this.unloadPlugin(pluginCheckboxes[i].name);
-                    document.querySelector("#enhanced > div:nth-child(3)").innerHTML += `<p style="color: white;">Reload is required to disable plugins. Press F5 to reload.</p>`
+                    document.querySelector("#enhanced > div:nth-child(3)").innerHTML += `<p style="color: white;">Reload is required to disable plugins. Press <a style="color: cyan;" onclick="window.location.href = '/';">here</a> to reload.</p>`
                 }
             })
         }
@@ -115,7 +116,7 @@ class ModManager {
             localStorage.setItem("currentTheme", theme);
             document.getElementById(theme).disabled = true;
             document.getElementById(theme).innerText = "Applied";
-            console.log(\`[ INFO ] \${theme} applied !\`);
+            console.log(\`\${theme} applied !\`);
         }`
         
         document.body.appendChild(script);
@@ -124,7 +125,7 @@ class ModManager {
     static async checkForItemUpdates(itemFile: string) {
         let pluginOrTheme:'theme'|'plugin';
         let itemBox = document.getElementsByName(`${itemFile}-box`)[0];
-        if(!itemBox) return console.log("item box not found.");
+        if(!itemBox) return logger.warn("item box not found.");
 
 
         if(itemFile.endsWith(".theme.css")) pluginOrTheme = "theme";
@@ -142,7 +143,7 @@ class ModManager {
                 if(request.status == 200) {
                     let extractedMetaData:MetaData = helpers.extractMetadataFromText(response);
                     if(extractedMetaData.version > installedItemMetaData.version) {
-                        console.log(`[ ${installedItemMetaData.name} ] An update exists. New version: ${extractedMetaData.version} | Current version: ${installedItemMetaData.version}`);
+                        logger.info(`[ ${installedItemMetaData.name} ] An update exists. New version: ${extractedMetaData.version} | Current version: ${installedItemMetaData.version}`);
 
                         document.getElementById(`${itemFile}-update`).style.display = "flex";
                         document.getElementById(`${itemFile}-update`).addEventListener("click", () => {

@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { shell } from "electron";
 import helpers from './helpers';
+import logger from "./logger";
 
 class Updater {
     public static async checkForUpdates(noUpdatePrompt: boolean) {
@@ -17,7 +18,7 @@ class Updater {
                 return false;
             }
         } catch(e) {
-            console.error(e);
+            logger.error(e);
             return false;
         }
     }
@@ -26,13 +27,13 @@ class Updater {
         const request = await fetch("https://github.com/REVENGE977/stremio-enhanced-community/raw/main/version");
         const response = await request.text();
 
-        console.log(`[ UpdateChecker ] Latest version fetch returned status code: ${request.status}`);
+        logger.info(`[ UpdateChecker ] Latest version fetch returned status code: ${request.status}`);
         return response;
     }
 
     public static getCurrentVersion() {
         const currentVersion = readFileSync(__dirname + "/version", "utf-8");
-        console.log("[ UpdateChecker ] Current Version is " + currentVersion);
+        logger.info("[ UpdateChecker ] Current Version is " + currentVersion);
         return currentVersion;
     }
 }
