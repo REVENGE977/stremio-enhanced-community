@@ -30,9 +30,7 @@ class DiscordPresence {
     public updateActivity(newActivity: Activity) {
         try {
             this.rpc.setActivity(newActivity);
-        }catch(e) {
-            logger.error(e)
-        }
+        }catch(e) {}
     }
 
     public stopActivity() {

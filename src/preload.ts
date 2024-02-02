@@ -28,12 +28,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     if(localStorage.getItem("currentTheme") != null) {
         let currentTheme = localStorage.getItem("currentTheme");
         
-        let link = document.querySelector(properties.themeLinkSelector);
-        properties.defaultThemeFileName = link.getAttribute("href");
         if(currentTheme != "Default" && existsSync(`${properties.themesPath}\\${currentTheme}`)) {
-            link.setAttribute("href", `http://localhost:3000/themes/${currentTheme}`);
-        } else {
-            link.setAttribute("href", properties.defaultThemeFileName);
+            if(document.getElementById("activeTheme")) document.getElementById("activeTheme").remove();
+
+            let themeElement = document.createElement('link');
+            themeElement.setAttribute("id", "activeTheme");
+            themeElement.setAttribute("rel", "stylesheet");
+            themeElement.setAttribute("href", `${properties.themesPath}\\${currentTheme}`);
+
+            document.head.appendChild(themeElement);
         }
     } else localStorage.setItem("currentTheme", "Default");
     
@@ -126,8 +129,10 @@ window.addEventListener("DOMContentLoaded", async () => {
                     let readMetaData = Helpers.extractMetadataFromFile(`${properties.themesPath}\\${theme}`);
                     
                     if (readMetaData && Object.keys(readMetaData).length > 0) {
-                        Settings.addItem("theme", theme, readMetaData);
-                        if(readMetaData.updateUrl != "none") ModManager.checkForItemUpdates(theme);
+                        if(readMetaData.name.toLowerCase() != "default") {
+                            Settings.addItem("theme", theme, readMetaData);
+                            if(readMetaData.updateUrl != "none") ModManager.checkForItemUpdates(theme);
+                        }
                     }
                 })
                 

@@ -4,6 +4,7 @@ import { dialog, BrowserWindow } from "electron";
 import { spawnSync } from "child_process"
 import logger from "./logger";
 import { ipcRenderer } from "electron";
+
 class Helpers {
     private static instance: Helpers;
     private mainWindow: BrowserWindow | null = null;

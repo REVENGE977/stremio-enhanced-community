@@ -1,6 +1,6 @@
 {
   "name": "stremio-enhanced",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "basically a custom stremio client that gives the user the ability to use custom themes & plugins.",
   "main": "./dist/main.js",
   "scripts": {
@@ -25,7 +25,6 @@
     "@types/angular": "^1.8.9",
     "@types/discord-rpc": "^4.0.8",
     "@types/electron": "^1.6.10",
-    "@types/express": "^4.17.21",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "electron": "^28.1.4",
@@ -40,7 +39,6 @@
     "discord-rpc": "^4.0.1",
     "electron-prompt": "^1.7.0",
     "electron-updater": "^5.3.0",
-    "express": "^4.18.2",
     "winston": "^3.11.0"
   },
   "files": [

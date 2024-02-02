@@ -5,6 +5,7 @@ import properties from "./properties"
 import helpers from "./helpers"
 import MetaData from "./metadata";
 import logger from "./logger";
+import Properties from "./properties";
 
 class ModManager {
     static loadPlugin(pluginName:string) {
@@ -102,11 +103,17 @@ class ModManager {
         let script = document.createElement("script");  
         script.innerHTML = 
         `function applyTheme(theme) {
-            let link = document.querySelector("${properties.themeLinkSelector}");
-            if(theme != "Default") {
-                link.setAttribute("href", \`http://localhost:3000/themes/\${theme}\`);
-            } else link.setAttribute("href", \`${properties.defaultThemeFileName}\`);
-            
+            if(document.getElementById("activeTheme")) document.getElementById("activeTheme").remove();
+
+            if(theme != "Default") {      
+                let themeElement = document.createElement('link');
+                themeElement.setAttribute("id", "activeTheme");
+                themeElement.setAttribute("rel", "stylesheet");
+                themeElement.setAttribute("href", \`${Properties.themesPath.replace(/\\/g, "\\\\")}\\\\\${theme}\`);
+
+                document.head.appendChild(themeElement);
+            }
+                        
             let currentTheme = localStorage.getItem("currentTheme");
             if(currentTheme != null) {
                 document.getElementById(currentTheme).disabled = false;

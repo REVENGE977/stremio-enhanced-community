@@ -2,15 +2,14 @@ import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { join } from "path";
 import { exec } from "child_process";
 import { mkdirSync, existsSync } from "fs";
-import express from "express";
 import helpers from './helpers';
 import Updater from "./updater";
 import Properties from "./properties";
 import DiscordPresence from "./discordpresence";
 import logger from "./logger";
 
-var mainWindow: BrowserWindow | null;
-var discordrpc: DiscordPresence | null;
+let mainWindow: BrowserWindow | null;
+let discordrpc: DiscordPresence | null;
 
 async function createWindow() {
     mainWindow = new BrowserWindow({
@@ -88,18 +87,13 @@ function killStremioService() {
 }
 
 app.on("ready", async () => {
-    logger.info("Running on NodeJS version: " + process.version)
+    logger.info("Running on NodeJS version: " + process.version);
+
     try {
         if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced`);
         if(!existsSync(Properties.themesPath)) mkdirSync(Properties.themesPath);
         if(!existsSync(Properties.pluginsPath)) mkdirSync(Properties.pluginsPath);
     }catch {}
-    
-    const web = express();
-    
-    web.use(express.static(`${process.env.APPDATA}\\stremio-enhanced`));
-    
-    web.listen(3000, () => logger.info("Listening on port 3000."));
     
     if(!process.argv.includes("--no-stremio-service")) {
         const stremioServicePath = helpers.checkExecutableExists();

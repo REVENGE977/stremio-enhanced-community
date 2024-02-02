@@ -29,8 +29,7 @@ same for plugins, you just click on "OPEN PLUGINS FOLDER" and move your plugin i
 ![settings_screenshot](https://github.com/REVENGE977/stremio-enhanced/raw/main/images/settings_screenshot.png)
 
 ## How do I make my own plugin?
-Plugins are simply javascript files running on the client-side, so just write your javascript code like you normally would on client-side
-and add .plugin.js at the end of the javascript file name, and move your javascript plugin to the plugins folder (%appdata%\stremio-enhanced\plugins).
+Plugins are simply javascript files running on the client side, so just write your javascript code like you normally would on the client side and add .plugin.js at the end of the javascript file name.
 
 As of version v0.3 you are required to provide meta data for the plugin, here is an example:
 ```js
@@ -43,6 +42,6 @@ As of version v0.3 you are required to provide meta data for the plugin, here is
  */
 ```
 ## How do I make my own theme?
-You just take the stock stremio css file and modify it. The stock css file can be found [here](https://github.com/REVENGE977/stremio-enhanced-community/blob/main/examples/stockstremio_unminified.theme.css). You can also just take the default theme yourself (recommended), by opening devtools and going to the Source tab, and there you will find the css file for the default theme. You can take it and put it [here](https://www.unminify2.com/) to unminify it and make it easier to read and modify.
+You just make a file that ends with .theme.css and write your CSS modifications there. Obviously, you can use the devtools (Ctrl+Shift+I) to find an element's class name, etc.
 
 *You are also required to provide metadata in your theme. The same way as plugins from the example above.*

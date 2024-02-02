@@ -23,3 +23,9 @@
 - Now kills [Stremio Service](https://github.com/Stremio/stremio-service) when the app is closed.
 
 *Note: I've only tested the update on Windows.*
+
+## Update v0.6
+- I Made it so it doesn't rely on a webserver just to load themes anymore (I don't know why I had it working that way before tbh).
+- Now, instead of having to copy the default theme css and modify it, you can just make a new file and put all of your CSS changes, making it easier to make and modify themes now.
+
+*Note: I've only tested the update on Windows.*
