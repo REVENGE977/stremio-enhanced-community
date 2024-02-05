@@ -1,11 +1,11 @@
-import { Settings } from "./settings";
+import Settings from "./Settings";
 import { readFileSync, writeFileSync } from "fs";
 import { exec } from "child_process";
-import properties from "./properties"
-import helpers from "./helpers"
-import MetaData from "./metadata";
-import logger from "./logger";
-import Properties from "./properties";
+import properties from "./Properties"
+import helpers from "./Helpers"
+import MetaData from "./MetaData";
+import logger from "./Logger";
+import Properties from "./Properties";
 
 class ModManager {
     static loadPlugin(pluginName:string) {

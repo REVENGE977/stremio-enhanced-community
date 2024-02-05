@@ -1,5 +1,5 @@
 import DiscordRPC from 'discord-rpc';
-import logger from './logger';
+import logger from './Logger';
 
 class DiscordPresence {
     public rpc:any;

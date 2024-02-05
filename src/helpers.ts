@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from "fs";
 import { join, resolve } from "path";
 import { dialog, BrowserWindow } from "electron";
 import { spawnSync } from "child_process"
-import logger from "./logger";
+import logger from "./Logger";
 import { ipcRenderer } from "electron";
 
 class Helpers {

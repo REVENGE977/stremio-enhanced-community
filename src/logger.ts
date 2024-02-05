@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 
-const logger = createLogger({
+const Logger = createLogger({
     format: format.combine(
         format(info => {
             info.level = info.level.toUpperCase()
@@ -14,4 +14,4 @@ const logger = createLogger({
     transports: [new transports.Console()]
 });
 
-export default logger;
+export default Logger;

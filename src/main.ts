@@ -2,11 +2,11 @@ import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { join } from "path";
 import { exec } from "child_process";
 import { mkdirSync, existsSync } from "fs";
-import helpers from './helpers';
-import Updater from "./updater";
-import Properties from "./properties";
-import DiscordPresence from "./discordpresence";
-import logger from "./logger";
+import helpers from './Helpers';
+import Updater from "./Updater";
+import Properties from "./Properties";
+import DiscordPresence from "./DiscordPresence";
+import logger from "./Logger";
 
 let mainWindow: BrowserWindow | null;
 let discordrpc: DiscordPresence | null;
@@ -14,7 +14,7 @@ let discordrpc: DiscordPresence | null;
 async function createWindow() {
     mainWindow = new BrowserWindow({
         webPreferences: {
-            preload: join(__dirname, "preload.js"),
+            preload: join(__dirname, "Preload.js"),
             webSecurity: false,
             nodeIntegration: true
         },

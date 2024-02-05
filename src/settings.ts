@@ -1,6 +1,6 @@
-import MetaData from "./metadata"
+import MetaData from "./MetaData"
 
-export class Settings {
+class Settings {
     
     public static addSeciton(sectionid:string, title:string, last:Boolean) {
         document.querySelector("#settingsPage > div.sections > nav").innerHTML += `<a href="#settings-${sectionid}" tabindex="-1"><div translate="SETTINGS_NAV_${sectionid}" class="label ng-scope ng-binding">${title}</div></a>`;
@@ -65,3 +65,5 @@ export class Settings {
         element.classList.add("active");
     }
 }
+
+export default Settings;

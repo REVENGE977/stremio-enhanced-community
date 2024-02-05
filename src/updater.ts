@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { shell } from "electron";
-import helpers from './helpers';
-import logger from "./logger";
+import helpers from './Helpers';
+import logger from "./Logger";
 
 class Updater {
     public static async checkForUpdates(noUpdatePrompt: boolean) {

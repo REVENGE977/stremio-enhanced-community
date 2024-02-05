@@ -1,11 +1,11 @@
 import { ipcRenderer } from "electron";
 import { readdirSync } from "fs";
-import { Settings } from "./settings";
-import properties from "./properties"
+import Settings from "./Settings";
+import properties from "./Properties"
 import { existsSync } from "fs";
-import ModManager from "./modManager";
-import Helpers from "./helpers";
-import Updater from "./updater";
+import ModManager from "./ModManager";
+import Helpers from "./Helpers";
+import Updater from "./Updater";
 
 window.addEventListener("DOMContentLoaded", async () => {
     //removes the toast that appears on startup automatically.
@@ -37,6 +37,8 @@ window.addEventListener("DOMContentLoaded", async () => {
             themeElement.setAttribute("href", `${properties.themesPath}\\${currentTheme}`);
 
             document.head.appendChild(themeElement);
+        } else {
+            localStorage.setItem("currentTheme", "Default");
         }
     } else localStorage.setItem("currentTheme", "Default");
     
