@@ -4,7 +4,11 @@
 	</a>
 	<h1 align="center">Stremio Enhanced</h1>
 
-![NodeJS](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![Electron.js](https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white) ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white) 
+<div style="text-align: center;">
+
+![NodeJS](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![Electron.js](https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white) ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)
+</div>
+
 </p>
 
 ## What is Stremio Enhanced ?
@@ -55,8 +59,7 @@ You just make a file with a name that ends with `.theme.css` and write your CSS 
 *You are also required to provide metadata in your theme. The same way as plugins from the example above.*
 
 ## Known Issues
-- You can't switch audio tracks in streams that have multiple audio tracks to choose from. This is due to the limitations of browsers, unfortunetly. More info on this here: https://www.reddit.com/r/Stremio/comments/15sd629/new_web_ui_issue/jwf7jyp/ 
-https://github.com/Stremio/stremio-web/issues/426
+- You can't switch audio tracks in streams that have multiple audio tracks to choose from. This is due to the limitations of browsers, unfortunetly. More info on this here: https://www.reddit.com/r/Stremio/comments/15sd629/new_web_ui_issue/jwf7jyp/ https://github.com/Stremio/stremio-web/issues/426
 
 ## Disclaimer
 This project is not affiliated in any way with Stremio.
