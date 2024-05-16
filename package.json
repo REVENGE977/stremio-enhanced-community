@@ -25,6 +25,7 @@
     "@types/angular": "^1.8.9",
     "@types/discord-rpc": "^4.0.8",
     "@types/electron": "^1.6.10",
+    "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "electron": "^28.1.4",
