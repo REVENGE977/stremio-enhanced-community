@@ -78,40 +78,48 @@ class Helpers {
     
     
     checkExecutableExists() {
-        let installationPath: string | undefined;
+        let installationPath;
         
         switch (process.platform) {
             case 'win32':
-            installationPath = join(process.env.LOCALAPPDATA || '', 'Programs', 'StremioService', `stremio-service.exe`);
-            break;
+                installationPath = join(process.env.LOCALAPPDATA || '', 'Programs', 'StremioService', 'stremio-service.exe');
+                break;
             case 'darwin':
-            installationPath = join(process.env.HOME || '', 'Applications', 'StremioService', `stremio-service.app`, 'Contents', 'MacOS', `stremio-service`);
-            break;
+                // Typical Mac installation path for app bundles
+                installationPath = join('/Applications', 'StremioService.app', 'Contents', 'MacOS', 'stremio-service');
+                break;
             case 'linux':
-            installationPath = join(process.env.HOME || '', 'bin', `stremio-service`);
-            break;
+                // Common Linux installation paths
+                installationPath = existsSync('/usr/local/bin/stremio-service') ? '/usr/local/bin/stremio-service' :
+                                existsSync('/usr/bin/stremio-service') ? '/usr/bin/stremio-service' :
+                                join(process.env.HOME || '', 'bin', 'stremio-service');
+                break;
             default:
-            logger.error('Unsupported operating system');
-            return null;
+                logger.error('Unsupported operating system');
+                return null;
         }
         
         if (!installationPath) {
             logger.error('Failed to determine installation path for the current operating system');
             return null;
         }
-        
+
         const fullPath = resolve(installationPath);
-        
+        console.log("Checking existence of:", fullPath);
+
         try {
             if (existsSync(fullPath)) {
                 return fullPath;
+            } else {
+                logger.error(`StremioService executable not found at ${fullPath}`);
             }
         } catch (error) {
-            logger.error(`Error checking stremio-service existence in ${fullPath}:`, error.message);
+            logger.error(`Error checking StremioService existence in ${fullPath}:`, error.message);
         }
-        
+
         return null;
     }
+
     
     async showAlert(alertType: 'info' | 'warning' | 'error', title: string, message: string, buttons: Array<string>) : Promise<number> {
         const options: Electron.MessageBoxOptions = {
