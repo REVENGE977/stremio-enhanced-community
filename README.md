@@ -21,6 +21,7 @@ You can download the latest version from [the releases tab](https://github.com/R
 ```sh
 git clone https://github.com/REVENGE977/stremio-enhanced.git
 cd stremio-enhanced
+npm install
 npm run package-all
 npm run package-macos-arm
 ```
