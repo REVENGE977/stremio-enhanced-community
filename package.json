@@ -1,6 +1,6 @@
 {
   "name": "stremio-enhanced",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "basically a custom stremio client that gives the user the ability to use custom themes & plugins.",
   "main": "./dist/Main.js",
   "scripts": {
