@@ -60,6 +60,3 @@ You just make a file with a name that ends with `.theme.css` and write your CSS 
 
 ## Disclaimer
 This project is not affiliated in any way with Stremio.
-
-### Forked PROJECT
-This fork was created to fix a few bugs, not present in the original project.
