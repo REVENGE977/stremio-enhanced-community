@@ -123,7 +123,7 @@ function addEpisodesToAll(compile, scope) {
 		  <img stremio-image="::{ url: ${episode.thumbnail} }" data-image="${episode.thumbnail}" loading="lazy" src="${episode.thumbnail}">
 		</div>
 		<div class="episode-details">
-		  <div class="title ng-binding">${episodesCounter}. ${episode.title}</div>
+		  <div class="title ng-binding" ${(episode.overview.startsWith("[Filler]") || episode.overview.startsWith("(Filler)")) ? "style='color: #A14A40;'" : ""}>${episodesCounter}. ${episode.title}</div>
 		  <div class="footer">
 			<div class="date ng-isolate-scope">${formatTimestamp(episode.released.getTime())}</div>
             <div class="date ng-isolate-scope">Season ${episode.season}, Ep. ${episode.number}</div>
@@ -147,7 +147,7 @@ function formatTimestamp(timestamp) {
 }
 
 function waitForElm(selector) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         if (document.querySelector(selector)) {
             return resolve(document.querySelector(selector));
         }
@@ -163,6 +163,11 @@ function waitForElm(selector) {
             childList: true,
             subtree: true
         });
+
+        setTimeout(() => {
+            observer.disconnect();
+            reject(new Error(`Timeout waiting for element with selector: ${selector}`));
+        }, 10000);
     });
 }
 

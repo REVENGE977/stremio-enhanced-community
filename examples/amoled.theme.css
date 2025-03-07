@@ -2,7 +2,7 @@
  * @name Amoled Theme
  * @description A theme that uses amoled pitch black color.
  * @updateUrl https://raw.githubusercontent.com/REVENGE977/StremioAmoledTheme/main/amoled.theme.css
- * @version 1.0.0
+ * @version 1.0.1
  * @author REVENGE977
  */
 
@@ -223,4 +223,8 @@ input[type=checkbox]:focus {
     -webkit-box-shadow: none;
     box-shadow: none;
     background-color: transparent;
+}
+
+#addonPromptModal .modal {
+    background-color: black;
 }
