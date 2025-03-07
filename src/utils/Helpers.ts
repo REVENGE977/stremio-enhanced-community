@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from "fs";
 import { join, resolve } from "path";
 import { dialog, BrowserWindow } from "electron";
 import { spawnSync } from "child_process"
-import logger from "./Logger";
+import logger from "./logger";
 import { ipcRenderer } from "electron";
 
 class Helpers {
@@ -105,10 +105,11 @@ class Helpers {
         }
 
         const fullPath = resolve(installationPath);
-        console.log("Checking existence of:", fullPath);
+        logger.info("Checking existence of " + fullPath);
 
         try {
             if (existsSync(fullPath)) {
+                logger.info("StremioService executable found.");
                 return fullPath;
             } else {
                 logger.error(`StremioService executable not found at ${fullPath}`);
@@ -199,91 +200,7 @@ class Helpers {
         return result.stdout.toString().toLowerCase().includes(processName.toLowerCase());
     }
 
-    async discordRPCHandler() {
-        window.addEventListener('popstate', () => {
-            if(location.href.includes('#/player/')) {
-                this.waitForTitleChange().then(() => {
-                    const episodeSeasonRegex = /\((\d+)x(\d+)\)/;
-
-                    let playingStream = document.title.split('Stremio - ')[1];
-                    const episodeSeason = episodeSeasonRegex.exec(playingStream);
-
-                    let showNameRegex = /^([^\-]+)/;
-                    let showName = showNameRegex.exec(playingStream)[0].trim();
-                    let video = document.getElementById("videoPlayer") as HTMLVideoElement;
-
-                    const handlePlaying = () => {
-                        let currentTimestamp = Math.floor(Date.now() / 1000) - Math.floor(video.currentTime)
-
-                        ipcRenderer.send("discordrpc-update", { 
-                            details: `Watching ${showName}`, 
-                            state: `Season: ${episodeSeason[1]}, Episode: ${episodeSeason[2]}`, 
-                            startTimestamp: currentTimestamp,
-                            largeImageKey: "1024stremio",
-                            largeImageText: "Stremio Enhanced",
-                            smallImageKey: "play",
-                            smallImageText: "Playing..",
-                            instance: false
-                        }); 
-                    };
-
-                    const handlePausing = () => {
-                        ipcRenderer.send("discordrpc-update", { 
-                            details: `Paused ${showName} at ${this.formatTime(video.currentTime)}`, 
-                            state: `Season: ${episodeSeason[1]}, Episode: ${episodeSeason[2]}`, 
-                            largeImageKey: "1024stremio",
-                            largeImageText: "Stremio Enhanced",
-                            smallImageKey: "pause",
-                            smallImageText: "Paused",
-                            instance: false
-                        }); 
-                    }
-
-                    video.addEventListener('playing', handlePlaying);
-                    video.addEventListener('pause', handlePausing);
-                    video.play();
-                })
-            } else if(location.href.includes("#/detail/")) {
-                this.waitForElm(".episodes-list").then(() => {
-                    let showName = document.querySelector('div[class="fallback ng-binding"]').textContent;
-                    const seasonSelectMenu = document.getElementsByName("season")[0] as HTMLSelectElement;
-
-                    ipcRenderer.send("discordrpc-update", { 
-                        details: `Exploring ${showName}`,
-                        state: `Season: ${seasonSelectMenu.value}`,
-                        largeImageKey: "1024stremio",
-                        largeImageText: "Stremio Enhanced",
-                        smallImageKey: "menuburger",
-                        smallImageText: "Main Menu",
-                        instance: false
-                    });
-
-                    seasonSelectMenu.addEventListener('change', (e:any) => {
-                        ipcRenderer.send("discordrpc-update", { 
-                            details: `Exploring ${showName}`,
-                            state: `Season: ${e.target.value}`,
-                            largeImageKey: "1024stremio",
-                            largeImageText: "Stremio Enhanced",
-                            smallImageKey: "menuburger",
-                            smallImageText: "Main Menu",
-                            instance: false
-                        });
-                    });
-                })
-            } else if(location.href.endsWith("#/")) {
-                ipcRenderer.send("discordrpc-update", { 
-                    details: "Main Menu", 
-                    largeImageKey: "1024stremio",
-                    largeImageText: "Stremio Enhanced",
-                    smallImageKey: "menuburger",
-                    smallImageText: "Main Menu",
-                    instance: false
-                });
-            }
-        });
-    }
-
-    private formatTime(seconds:number) {
+    public formatTime(seconds:number) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = Math.floor(seconds % 60);

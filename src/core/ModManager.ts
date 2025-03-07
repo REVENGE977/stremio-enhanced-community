@@ -2,14 +2,14 @@ import Settings from "./Settings";
 import { readFileSync, writeFileSync } from "fs";
 import { exec } from "child_process";
 import properties from "./Properties"
-import helpers from "./Helpers"
-import MetaData from "./MetaData";
-import logger from "./Logger";
+import helpers from "../utils/Helpers"
+import MetaData from "../interfaces/MetaData";
+import logger from "../utils/logger";
 import Properties from "./Properties";
 
 class ModManager {
     static loadPlugin(pluginName:string) {
-        let plugin = readFileSync(`${process.env.APPDATA}\\stremio-enhanced\\plugins\\${pluginName}`, "utf-8");
+        let plugin = readFileSync(`${Properties.pluginsPath}\\${pluginName}`, "utf-8");
         let script = document.createElement("script");
         script.innerHTML = plugin
         script.id = pluginName
@@ -56,47 +56,65 @@ class ModManager {
     static openThemesFolder() {
         let button = document.getElementById("openthemesfolderBtn");
         button.addEventListener("click", () => {
-            exec(`start "" "${process.env.APPDATA}\\stremio-enhanced\\themes"`);
+            exec(`start "" "${Properties.themesPath}"`);
         })
     }
     
     static openPluginsFolder() {
         let button = document.getElementById("openpluginsfolderBtn");
         button.addEventListener("click", () => {
-            exec(`start "" "${process.env.APPDATA}\\stremio-enhanced\\plugins"`);
+            exec(`start "" "${Properties.pluginsPath}"`);
         })
     }
         
     static scrollListener() {
-        let generalSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(1)');
-        generalSection.addEventListener("click", () => {
-            document.querySelector("#settings-user-prefs").scrollIntoView();
-            Settings.activeSection(generalSection);
+        // let generalSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(1)');
+        // generalSection.addEventListener("click", () => {
+        //     document.querySelector("#settings-user-prefs").scrollIntoView();
+        //     Settings.activeSection(generalSection);
+        // })
+        
+        // let playerSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(2)');
+        // playerSection.addEventListener("click", () => {
+        //     document.querySelector("#settings-player-prefs").scrollIntoView();
+        //     Settings.activeSection(playerSection);
+        // })
+        
+        // let streamingSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(3)');
+        // streamingSection.addEventListener("click", () => {
+        //     document.querySelector("#settings-streaming-prefs").scrollIntoView();
+        //     Settings.activeSection(streamingSection);
+        // })
+        
+        // let shortcutsSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(4)');
+        // shortcutsSection.addEventListener("click", () => {
+        //     document.querySelector("#settings-shortcuts").scrollIntoView();
+        //     Settings.activeSection(shortcutsSection);
+        // })
+
+        let enhanced = document.getElementById('enhanced');
+        let enhancedNav = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(5)');
+
+        enhancedNav.addEventListener("click", () => {
+            document.querySelector("#enhanced > h2").scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            Settings.activeSection(enhancedNav);
         })
         
-        let playerSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(2)');
-        playerSection.addEventListener("click", () => {
-            document.querySelector("#settings-player-prefs").scrollIntoView();
-            Settings.activeSection(playerSection);
-        })
-        
-        let streamingSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(3)');
-        streamingSection.addEventListener("click", () => {
-            document.querySelector("#settings-streaming-prefs").scrollIntoView();
-            Settings.activeSection(streamingSection);
-        })
-        
-        let shortcutsSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(4)');
-        shortcutsSection.addEventListener("click", () => {
-            document.querySelector("#settings-shortcuts").scrollIntoView();
-            Settings.activeSection(shortcutsSection);
-        })
-        
-        let enhancedSection = document.querySelector('#settingsPage > div.sections > nav > a:nth-child(5)');
-        enhancedSection.addEventListener("click", () => {
-            document.querySelector("#enhanced > h2").scrollIntoView();
-            Settings.activeSection(enhancedSection);
-        })
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    Settings.activeSection(enhancedNav);
+                } else {
+                    enhancedNav.classList.remove("active");
+                }
+            });
+        }, { threshold: 0.1 });
+    
+        observer.observe(enhanced);
     }
     
     static addApplyThemeFunction() {

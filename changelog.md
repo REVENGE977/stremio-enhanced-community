@@ -29,3 +29,13 @@
 - Now, instead of having to copy the default theme css and modify it, you can just make a new file and put all of your CSS changes, making it easier to make and modify themes now.
 
 *Note: I've only tested the update on Windows.*
+
+
+## Update v0.7
+- Fixed an issue where options in the settings menu that are part of the regular stremio were not working.
+- Codebase improvements
+#### knowns issues that have not been solved here:
+- Not sure if this works on macOS or not. [Although the stremio service path detection issue shouldn't be there anymore](https://github.com/REVENGE977/stremio-enhanced-community/pull/16).
+- Changing audio tracks isn't supported.
+  
+*Note: I've only tested the update on Windows. I do not have access to a mac at the moment*

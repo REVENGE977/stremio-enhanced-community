@@ -2,11 +2,11 @@ import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { join } from "path";
 import { exec } from "child_process";
 import { mkdirSync, existsSync } from "fs";
-import helpers from './Helpers';
-import Updater from "./Updater";
-import Properties from "./Properties";
-import DiscordPresence from "./DiscordPresence";
-import logger from "./Logger";
+import helpers from './utils/Helpers';
+import Updater from "./core/Updater";
+import Properties from "./core/Properties";
+import DiscordPresence from "./utils/DiscordPresence";
+import logger from "./utils/logger";
 
 let mainWindow: BrowserWindow | null;
 let discordrpc: DiscordPresence | null;
@@ -14,7 +14,7 @@ let discordrpc: DiscordPresence | null;
 async function createWindow() {
     mainWindow = new BrowserWindow({
         webPreferences: {
-            preload: join(__dirname, "Preload.js"),
+            preload: join(__dirname, "preload.js"),
             webSecurity: false,
             nodeIntegration: true
         },
@@ -39,7 +39,7 @@ async function createWindow() {
     });
 
     ipcMain.on('discordrpc-status', async(_, status) => {
-        logger.info(`DiscordRPC is set to ${status == "true" ? "enabled" : "disabled"}`);
+        logger.info(`DiscordRPC is set to ${status == "true" ? "enabled" : "disabled"}.`);
         if(status == "true") {
             discordrpc = new DiscordPresence();
         } else {

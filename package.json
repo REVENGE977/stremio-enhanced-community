@@ -1,15 +1,15 @@
 {
   "name": "stremio-enhanced",
-  "version": "0.0.6",
-  "description": "basically a custom stremio client that gives the user the ability to use custom themes & plugins.",
-  "main": "./dist/Main.js",
+  "version": "0.0.7",
+  "description": "Electron-based Stremio client with plugins and themes support.",
+  "main": "./dist/main.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "dev": "cls && npm run build && npx electron --log-level=3 ./dist/Main.js --devtools",
     "package-all": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=all --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
-    "package-win32": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
+    "package-win": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-macos": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=darwin --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-linux": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=linux --arch=x64 --prune=true --out=release-builds --icon=./images/icon.ico",
     "package-macos-arm": "npm run build && npx electron-packager ./ stremio-enhanced --overwrite --asar --platform=darwin --arch=arm64 --prune=true --out=release-builds --icon=./images/icon.ico"
