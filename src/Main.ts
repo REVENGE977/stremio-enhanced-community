@@ -7,16 +7,17 @@ import Updater from "./core/Updater";
 import Properties from "./core/Properties";
 import DiscordPresence from "./utils/DiscordPresence";
 import logger from "./utils/logger";
+import StremioService from "./utils/StremioService";
 
 let mainWindow: BrowserWindow | null;
-let discordrpc: DiscordPresence | null;
 
 async function createWindow() {
     mainWindow = new BrowserWindow({
         webPreferences: {
             preload: join(__dirname, "preload.js"),
             webSecurity: false,
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false
         },
         width: 1500,
         height: 850,
@@ -41,17 +42,15 @@ async function createWindow() {
     ipcMain.on('discordrpc-status', async(_, status) => {
         logger.info(`DiscordRPC is set to ${status == "true" ? "enabled" : "disabled"}.`);
         if(status == "true") {
-            discordrpc = new DiscordPresence();
-        } else {
-            if(discordrpc) {
-                discordrpc.stopActivity();
-            }
+            DiscordPresence.start();
+        } else if(DiscordPresence.started) {
+            DiscordPresence.stop();
         }
     });
 
     ipcMain.on('discordrpc-update', async (_, newDetails) => {
         logger.info("Updating DiscordRPC.");
-        discordrpc.updateActivity(newDetails);
+        DiscordPresence.updateActivity(newDetails);
     });
 
     mainWindow.webContents.setWindowOpenHandler((edata:any) => {
@@ -65,25 +64,8 @@ async function createWindow() {
     }
 
     mainWindow.on('closed', () => {
-        killStremioService();
+        StremioService.kill();
     });
-}
-
-function RunStremioService(servicePath: string) {
-    setTimeout(() => {
-        if(exec(servicePath)) {
-            logger.info("Stremio Service Started.");
-        }
-    }, 0);
-}
-
-function killStremioService() {        
-    try {
-        logger.info("Killing Stremio Service.")
-        exec("taskkill /F /IM stremio-service.exe && taskkill /F /IM stremio-runtime.exe");
-    }catch(e) {
-        logger.error(e);
-    }
 }
 
 app.on("ready", async () => {
@@ -96,7 +78,7 @@ app.on("ready", async () => {
     }catch {}
     
     if(!process.argv.includes("--no-stremio-service")) {
-        const stremioServicePath = helpers.checkExecutableExists();
+        const stremioServicePath = StremioService.checkExecutableExists();
         if(!stremioServicePath) {
             const buttonClicked = await helpers.showAlert("error", "Stremio Service Is Required!", "Stremio Service not found. Please install it from https://github.com/Stremio/stremio-service", ['OK']);
             
@@ -108,13 +90,13 @@ app.on("ready", async () => {
         }
         
         //check if stremio service is running or not, and if not start it.
-        helpers.isProcessRunning("stremio-service")
+        StremioService.isProcessRunning()
         .then((result) => {
             if (result) {
                 logger.info("Stremio Service is already running.");
             } else {
                 logger.info("Stremio Service is not running, starting...");
-                RunStremioService(stremioServicePath);
+                StremioService.run(stremioServicePath);
             }
         }).catch((error) => logger.error('Error checking process: ' + error));
     } else logger.info("Launching without Stremio Service.");

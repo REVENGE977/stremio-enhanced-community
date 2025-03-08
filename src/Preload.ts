@@ -9,7 +9,6 @@ import Updater from "./core/Updater";
 import DiscordPresence from "./utils/DiscordPresence";
 
 window.addEventListener("DOMContentLoaded", async () => {
-    console.log(`${properties.themesPath}\\Default.theme.css`);
     //removes the toast that appears on startup automatically.
     Helpers.waitForElm('#toast-container > div > div > button').then((elm:HTMLElement) => {
         elm.click();

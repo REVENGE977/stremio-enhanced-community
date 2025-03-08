@@ -21,7 +21,6 @@ class Settings {
         const hr2 = document.createElement("hr");
         settingsPanel.appendChild(hr2);
         
-
         // add section to nav
         const nav = document.querySelector("#settingsPage > div.sections > nav");
 
@@ -35,15 +34,10 @@ class Settings {
         div.textContent = title;
         
         a.appendChild(div);
-        nav.appendChild(a);
-
-        // compile(section)(settingsPanelScope);
-        // compile(div)(navScope);     
+        nav.appendChild(a);  
     }
 
     public static addCategory(title:string, sectionid:string, icon:string) {
-        const settingsPanel = document.querySelector("#settingsPanel");
-
         const section = document.getElementById(sectionid);
 
         const categoryDiv = document.createElement("div");

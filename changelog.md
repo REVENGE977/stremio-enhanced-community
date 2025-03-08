@@ -39,3 +39,15 @@
 - Changing audio tracks isn't supported.
   
 *Note: I've only tested the update on Windows. I do not have access to a mac at the moment*
+
+## Update v0.7.1
+This should've been part of v0.7 tbh, but I rushed the previous release for no reason.
+- Better DiscordRPC implementation.
+  - Now supports movies as well, not just shows like before.
+  - Better rich presence looks. Now if available, it will show the poster of what you're watching instead of the stremio icon.
+  - Supports other navbar tabs like browse and settings etc.
+- Codebase improvements. Now StremioService-related things are in their own separate class under ./utils/StremioService.ts
+
+**I am soon planning move on from https://app.strem.io/shell-v4.4/ and use https://web.stremio.com/ instead. It will take some work but it will fix the [multiple audio tracks issue](https://github.com/REVENGE977/stremio-enhanced-community/issues/3) and make this project more in-line with the newest features added to Stremio.**
+
+*Note: I've only tested the update on Windows. I do not have access to a mac at the moment*

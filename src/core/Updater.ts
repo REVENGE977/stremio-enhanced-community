@@ -28,13 +28,13 @@ class Updater {
         const request = await fetch("https://github.com/REVENGE977/stremio-enhanced-community/raw/main/version");
         const response = await request.text();
 
-        logger.info(`[ UpdateChecker ] Latest version fetch returned status code: ${request.status}`);
+        logger.info(`Latest version available is v${response}.`);
         return response;
     }
 
     public static getCurrentVersion() {
         const currentVersion = readFileSync(join(__dirname, "../", "../", "version"), "utf-8");
-        logger.info("[ UpdateChecker ] Current Version is " + currentVersion);
+        logger.info(`Current running version is v${currentVersion}.`);
         return currentVersion;
     }
 }

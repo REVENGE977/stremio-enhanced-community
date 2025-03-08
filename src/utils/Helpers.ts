@@ -1,9 +1,6 @@
-import { readFileSync, existsSync } from "fs";
-import { join, resolve } from "path";
+import { readFileSync } from "fs";
 import { dialog, BrowserWindow } from "electron";
-import { spawnSync } from "child_process"
 import logger from "./logger";
-import { ipcRenderer } from "electron";
 
 class Helpers {
     private static instance: Helpers;
@@ -76,52 +73,6 @@ class Helpers {
         }
     }
     
-    
-    checkExecutableExists() {
-        let installationPath;
-        
-        switch (process.platform) {
-            case 'win32':
-                installationPath = join(process.env.LOCALAPPDATA || '', 'Programs', 'StremioService', 'stremio-service.exe');
-                break;
-            case 'darwin':
-                // Typical Mac installation path for app bundles
-                installationPath = join('/Applications', 'StremioService.app', 'Contents', 'MacOS', 'stremio-service');
-                break;
-            case 'linux':
-                // Common Linux installation paths
-                installationPath = existsSync('/usr/local/bin/stremio-service') ? '/usr/local/bin/stremio-service' :
-                                existsSync('/usr/bin/stremio-service') ? '/usr/bin/stremio-service' :
-                                join(process.env.HOME || '', 'bin', 'stremio-service');
-                break;
-            default:
-                logger.error('Unsupported operating system');
-                return null;
-        }
-        
-        if (!installationPath) {
-            logger.error('Failed to determine installation path for the current operating system');
-            return null;
-        }
-
-        const fullPath = resolve(installationPath);
-        logger.info("Checking existence of " + fullPath);
-
-        try {
-            if (existsSync(fullPath)) {
-                logger.info("StremioService executable found.");
-                return fullPath;
-            } else {
-                logger.error(`StremioService executable not found at ${fullPath}`);
-            }
-        } catch (error) {
-            logger.error(`Error checking StremioService existence in ${fullPath}:`, error.message);
-        }
-
-        return null;
-    }
-
-    
     async showAlert(alertType: 'info' | 'warning' | 'error', title: string, message: string, buttons: Array<string>) : Promise<number> {
         const options: Electron.MessageBoxOptions = {
             type: alertType,
@@ -187,17 +138,6 @@ class Helpers {
             
             document.addEventListener('titlechange', titleChangeListener);
         });
-    }
-    
-    async isProcessRunning(processName: string) {
-        const result = spawnSync('tasklist', ['/fo', 'csv', '/nh', '/v']);
-        
-        if (result.error) {
-            logger.error('Error executing tasklist:', result.error.message);
-            return false;
-        }
-        
-        return result.stdout.toString().toLowerCase().includes(processName.toLowerCase());
     }
 
     public formatTime(seconds:number) {

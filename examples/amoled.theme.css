@@ -142,6 +142,14 @@ body #navbar .tab.selected .icon {
     box-shadow: none;
 }
 
+.sidebar {
+    background-color: black;
+}
+
+select option {
+    background-color: black;
+}
+
 select:focus {
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -226,5 +234,25 @@ input[type=checkbox]:focus {
 }
 
 #addonPromptModal .modal {
+    background-color: black;
+}
+
+#subtitleMenu {
+    background-color: black;
+}
+
+#playbackSpeedMenu {
+    background-color: black;
+}
+
+#castingMenu {
+    background-color: black;
+}
+
+#controlbar .popup {
+    background-color: black;
+}
+
+#controlbar {
     background-color: black;
 }
