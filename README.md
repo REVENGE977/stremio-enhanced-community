@@ -57,7 +57,7 @@ You just make a file with a name that ends with `.theme.css` and write your CSS 
 *You are also required to provide metadata in your theme. The same way as plugins from the example above.*
 
 ## Known Issues
-- You can't switch audio tracks in streams that have multiple audio tracks to choose from. This is due to the limitations of browsers, unfortunetly. More info on this here: https://www.reddit.com/r/Stremio/comments/15sd629/new_web_ui_issue/jwf7jyp/ https://github.com/Stremio/stremio-web/issues/426
+- Subtitles are not available for **some** streams that do have embedded subs. This seems to be an issue with either [Stremio Web](https://web.stremio.com/) or Stremio Service, since this is also an issue in browser. Subtitles do work fine for **most** streams though.
 
 ## Disclaimer
 This project is not affiliated in any way with Stremio.
