@@ -1,6 +1,5 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { join } from "path";
-import { exec } from "child_process";
 import { mkdirSync, existsSync } from "fs";
 import helpers from './utils/Helpers';
 import Updater from "./core/Updater";
@@ -10,6 +9,12 @@ import logger from "./utils/logger";
 import StremioService from "./utils/StremioService";
 
 let mainWindow: BrowserWindow | null;
+
+app.commandLine.appendSwitch('use-angle', 'gl'); // Uses OpenGL for rendering. Having it on OpenGL enables the audio tracks menu in the video player
+app.commandLine.appendSwitch('enable-gpu-rasterization'); // Uses GPU for rendering
+app.commandLine.appendSwitch('enable-zero-copy'); // Improves video decoding
+app.commandLine.appendSwitch('ignore-gpu-blocklist'); // Forces GPU acceleration
+app.commandLine.appendSwitch('disable-software-rasterizer'); // Ensures no software fallback
 
 async function createWindow() {
     mainWindow = new BrowserWindow({
@@ -26,7 +31,7 @@ async function createWindow() {
     });
         
     mainWindow.setMenu(null);
-    mainWindow.loadURL("https://app.strem.io/shell-v4.4/?streamingServer=http%3A%2F%2F127.0.0.1%3A11470#/");
+    mainWindow.loadURL("https://web.stremio.com/");
     helpers.setMainWindow(mainWindow);
 
     ipcMain.on('update-check-on-startup', async (_, checkForUpdatesOnStartup) => {
@@ -43,7 +48,7 @@ async function createWindow() {
         logger.info(`DiscordRPC is set to ${status == "true" ? "enabled" : "disabled"}.`);
         if(status == "true") {
             DiscordPresence.start();
-        } else if(DiscordPresence.started) {
+        } else if(DiscordPresence.started && status == "false") {
             DiscordPresence.stop();
         }
     });
@@ -53,23 +58,27 @@ async function createWindow() {
         DiscordPresence.updateActivity(newDetails);
     });
 
+    // Opens links in external browser instead of opening them in the Electron app.
     mainWindow.webContents.setWindowOpenHandler((edata:any) => {
         shell.openExternal(edata.url);
         return { action: "deny" };
     });
     
+    // Devtools flag
     if(process.argv.includes("--devtools")) { 
         logger.info("Opening devtools."); 
         mainWindow.webContents.openDevTools(); 
     }
 
     mainWindow.on('closed', () => {
-        StremioService.kill();
+        StremioService.terminate();
     });
 }
 
 app.on("ready", async () => {
     logger.info("Running on NodeJS version: " + process.version);
+    logger.info("Running on Electron version: v" + process.versions.electron);
+    logger.info("Running on Chromium version: v" + process.versions.chrome);
 
     try {
         if(!existsSync(`${process.env.APPDATA}\\stremio-enhanced`)) mkdirSync(`${process.env.APPDATA}\\stremio-enhanced`);
@@ -83,22 +92,17 @@ app.on("ready", async () => {
             const buttonClicked = await helpers.showAlert("error", "Stremio Service Is Required!", "Stremio Service not found. Please install it from https://github.com/Stremio/stremio-service", ['OK']);
             
             if(buttonClicked == 0) {
-                shell.openExternal("https://github.com/Stremio/stremio-service/releases/latest");
+                shell.openExternal("https://www.stremio.com/download-service");
             }
             
             return process.exit();
         }
         
-        //check if stremio service is running or not, and if not start it.
-        StremioService.isProcessRunning()
-        .then((result) => {
-            if (result) {
-                logger.info("Stremio Service is already running.");
-            } else {
-                logger.info("Stremio Service is not running, starting...");
-                StremioService.run(stremioServicePath);
-            }
-        }).catch((error) => logger.error('Error checking process: ' + error));
+        // check if stremio service is running or not, and if not start it.
+        if (!await StremioService.isProcessRunning()) {
+            await StremioService.run(stremioServicePath);
+        } else logger.info("Stremio Service is already running.");
+        
     } else logger.info("Launching without Stremio Service.");
     
     createWindow();
@@ -114,6 +118,7 @@ app.on("window-all-closed", () => {
     }
 });
 
+// implements zooming in/out using shortcuts (ctrl =, ctrl -)
 app.on('browser-window-created', (_, window) => {
     window.webContents.on('before-input-event', (event:any, input:any) => {
         if (input.control && input.shift && input.key === 'I') {

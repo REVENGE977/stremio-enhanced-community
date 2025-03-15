@@ -113,6 +113,38 @@ class Helpers {
         });
     }
 
+    waitForElmByXPath(xpath: string) {
+        return new Promise((resolve, reject) => {
+            const evaluateXPath = () => {
+                const result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                return result.singleNodeValue;
+            };
+    
+            // If the element is already in the DOM, resolve immediately
+            const existingElement = evaluateXPath();
+            if (existingElement) return resolve(existingElement);
+            
+            const observer = new MutationObserver(() => {
+                const element = evaluateXPath();
+                if (element) {
+                    resolve(element);
+                    observer.disconnect();
+                }
+            });
+    
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+    
+            // Reject if the element is not found after 10 seconds
+            setTimeout(() => {
+                observer.disconnect();
+                reject(new Error(`Timeout waiting for element with XPath: ${xpath}`));
+            }, 10000);
+        });
+    }    
+
     waitForTitleChange() {
         return new Promise((resolve, reject) => {
             const observer = new MutationObserver(() => {
@@ -138,6 +170,48 @@ class Helpers {
             
             document.addEventListener('titlechange', titleChangeListener);
         });
+    }
+
+    public _eval(js: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                const eventName = 'stremio-enhanced'
+                const script = document.createElement('script')
+                
+                window.addEventListener(
+                    eventName,
+                    (data) => {
+                        script.remove()
+                        resolve((data as CustomEvent).detail)
+                    },
+                    { once: true },
+                )
+                
+                script.id = eventName
+                script.appendChild(
+                    document.createTextNode(`
+                        var core = window.services.core;
+                        var result = ${js};
+                
+                        if (result instanceof Promise) {
+                        result.then((awaitedResult) => {
+                            window.dispatchEvent(new CustomEvent("${eventName}", { detail: awaitedResult }));
+                        });
+                        } else {
+                        window.dispatchEvent(new CustomEvent("${eventName}", { detail: result }));
+                        }
+                    `),
+                    )
+                    
+                    document.head.appendChild(script)
+            } catch (err) {
+                reject(err)
+            }
+        })
+    }
+
+    public getElementByXpath(path:string) {
+        return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     }
 
     public formatTime(seconds:number) {

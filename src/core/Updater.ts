@@ -1,10 +1,12 @@
 import { readFileSync } from "fs";
 import { shell } from "electron";
 import helpers from '../utils/Helpers';
-import logger from "../utils/logger";
+import { getLogger } from "../utils/logger";
 import { join } from "path";
 
 class Updater {
+    private static logger = getLogger("DiscordPresence");
+
     public static async checkForUpdates(noUpdatePrompt: boolean) {
         try {
             let latestVersion = await this.getLatestVersion();
@@ -19,7 +21,7 @@ class Updater {
                 return false;
             }
         } catch(e) {
-            logger.error(e);
+            this.logger.info(e);
             return false;
         }
     }
@@ -28,13 +30,13 @@ class Updater {
         const request = await fetch("https://github.com/REVENGE977/stremio-enhanced-community/raw/main/version");
         const response = await request.text();
 
-        logger.info(`Latest version available is v${response}.`);
+        this.logger.info(`Latest version available is v${response}.`);
         return response;
     }
 
     public static getCurrentVersion() {
         const currentVersion = readFileSync(join(__dirname, "../", "../", "version"), "utf-8");
-        logger.info(`Current running version is v${currentVersion}.`);
+        this.logger.info(`Current running version is v${currentVersion}.`);
         return currentVersion;
     }
 }

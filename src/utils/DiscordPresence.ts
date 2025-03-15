@@ -1,9 +1,10 @@
 import DiscordRPC from 'discord-rpc';
-import logger from './logger';
+import { getLogger } from './logger';
 import Helpers from './Helpers';
 import { ipcRenderer } from "electron";
 
 class DiscordPresence {
+    private static logger = getLogger("DiscordPresence");
     private static rpc:DiscordRPC.Client;
     public static started:boolean = false;
     public static start() {
@@ -13,7 +14,7 @@ class DiscordPresence {
             
             this.rpc = new DiscordRPC.Client({ transport: 'ipc' });
             this.rpc.on('ready', () => {
-                logger.info('Connected to DiscordRPC.');
+                this.logger.info('Connected to DiscordRPC.');
                 this.updateActivity({
                     details: "Home",
                     largeImageKey: '1024stremio',
@@ -25,60 +26,61 @@ class DiscordPresence {
             });
             
             this.started = true;
-            this.rpc.login({ clientId }).catch(() => logger.error("Failed to connect to DiscordRPC, maybe Discord isn't running."));
+            this.rpc.login({ clientId }).catch(() => this.logger.error("Failed to connect to DiscordRPC, maybe Discord isn't running."));
         }catch(_) {}
     }
     
     public static updateActivity(newActivity: DiscordRPC.Presence) {
         try {
-            setTimeout(() => {
-                this.rpc.setActivity(newActivity);                
-            }, 5000);
+            this.rpc.setActivity(newActivity);                
         }catch(_) {}
     }
     
     public static stop() {
-        logger.info('Clearing DiscordRPC.');
+        this.logger.info('Clearing DiscordRPC.');
         this.rpc.clearActivity();
+        this.rpc.destroy();
         this.started = false;
     }
     
     public static async discordRPCHandler() {
-        window.addEventListener('popstate', () => {
+        const handleNavigation = () => {            
             this.checkWatching();
             this.checkExploring();
             this.checkMainMenu();
-        });
+        };
+
+        window.addEventListener('hashchange', handleNavigation);
     }
     
-    private static checkWatching() {
-        if(location.href.includes('#/player/')) {
-            Helpers.waitForTitleChange().then(() => {
-                const episodeSeasonRegex = /\((\d+)x(\d+)\)/;
+    private static async checkWatching() {
+        if(location.href.includes('#/player')) {
+            Helpers.waitForElm('video').then(async () => {
+                let video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
                 
-                let playingStream = document.title.split('Stremio - ')[1];
-                const episodeSeason = episodeSeasonRegex.exec(playingStream);
+                const metaDetails = await this.getMetaDetails();
                 
-                let showNameRegex = /^([^\-]+)/;
-                let showName = showNameRegex.exec(playingStream)[0].trim();
-                let video = document.getElementById("videoPlayer") as HTMLVideoElement;
-                let videoScope = window.angular.element(video).scope() as any;
-                let mediaType = videoScope.info.type;
+                let mediaType = metaDetails.type;
+                this.logger.info("Updating activity to Watching.");
+
+                let mediaName = metaDetails.name;
+                let mediaPoster = metaDetails.poster;
                 
-                showName = videoScope.info.name;
-                let showPoster = videoScope.info.poster;
-                
-                const handlePlaying = () => {
+                const handlePlaying = async () => {
                     let startTimestamp = Math.floor(Date.now() / 1000) - Math.floor(video.currentTime);
                     let endTimestamp = startTimestamp + Math.floor(video.duration);
-
+                    
                     if(mediaType == "series") {
+                        let seriesInfoDetails = (await this.getPlayerState()).seriesInfoDetails;
+                        let episode = seriesInfoDetails.episode;
+                        let season = seriesInfoDetails.season; 
+
                         ipcRenderer.send("discordrpc-update", { 
-                            details: `${showName} (S${episodeSeason[1]}E${episodeSeason[2]})`, 
+                            details: `${mediaName} (S${season}E${episode})`, 
                             state: 'Watching', 
                             startTimestamp,
                             endTimestamp,
-                            largeImageKey: showPoster ?? "1024stremio",
+                            largeImageKey: mediaPoster ?? "1024stremio",
                             largeImageText: "Stremio Enhanced",
                             smallImageKey: "play",
                             smallImageText: "Playing..",
@@ -86,11 +88,11 @@ class DiscordPresence {
                         }); 
                     } else if(mediaType == "movie") {
                         ipcRenderer.send("discordrpc-update", { 
-                            details: showName, 
+                            details: mediaName, 
                             state: 'Watching',
                             startTimestamp,
                             endTimestamp,
-                            largeImageKey: showPoster ?? "1024stremio",
+                            largeImageKey: mediaPoster ?? "1024stremio",
                             largeImageText: "Stremio Enhanced",
                             smallImageKey: "play",
                             smallImageText: "Playing..",
@@ -99,12 +101,16 @@ class DiscordPresence {
                     }
                 };
                 
-                const handlePausing = () => {
+                const handlePausing = async () => {
                     if(mediaType == "series") {
+                        let seriesInfoDetails = (await this.getPlayerState()).seriesInfoDetails;
+                        let episode = seriesInfoDetails.episode;
+                        let season = seriesInfoDetails.season; 
+
                         ipcRenderer.send("discordrpc-update", { 
-                            details: `${showName} (S${episodeSeason[1]}E${episodeSeason[2]})`, 
+                            details: `${mediaName} (S${season}E${episode})`, 
                             state: `Paused at ${Helpers.formatTime(video.currentTime)}`, 
-                            largeImageKey: showPoster,
+                            largeImageKey: mediaPoster,
                             largeImageText: "Stremio Enhanced",
                             smallImageKey: "pause",
                             smallImageText: "Paused",
@@ -112,9 +118,9 @@ class DiscordPresence {
                         }); 
                     } else if(mediaType == "movie") {
                         ipcRenderer.send("discordrpc-update", { 
-                            details: showName,
+                            details: mediaName,
                             state: `Paused at ${Helpers.formatTime(video.currentTime)}`, 
-                            largeImageKey: showPoster ?? "1024stremio",
+                            largeImageKey: mediaPoster ?? "1024stremio",
                             largeImageText: "Stremio Enhanced",
                             smallImageKey: "pause",
                             smallImageText: "Paused",
@@ -131,124 +137,116 @@ class DiscordPresence {
     }
     
     private static checkExploring() {
-        if(location.href.includes("#/detail/")) {
-            let detailElm = document.getElementById("board") as HTMLDivElement;
-            let detailScope = window.angular.element(detailElm).scope() as any;
-            let mediaType = detailScope.info.type;
-            
-            if(mediaType == "series") {
-                Helpers.waitForElm("select[name='season']").then(() => {
-                    let showName = detailScope.info.name;
-                    let showPoster = detailScope.info.poster;
-                    
-                    const seasonSelectMenu = document.getElementsByName("season")[0] as HTMLSelectElement;
-                    
+        if(location.href.includes("#/detail")) {
+            Helpers.waitForElm('.metadetails-container-K_Dqa').then(async () => {
+                const metaDetails = await this.getMetaDetails();
+                this.logger.info("Updating activity to Exploring.");
+                
+                Helpers.waitForElm('.description-container-yi8iU').then(() => {
+                    let mediaName = metaDetails.name;
+                    let mediaPoster = metaDetails.poster;
+                                            
                     ipcRenderer.send("discordrpc-update", { 
-                        details: `${showName} ${seasonSelectMenu.value == "all" ? "" : `(S${seasonSelectMenu.value})`}`,
+                        details: mediaName,
                         state: 'Exploring',
-                        largeImageKey: showPoster ?? "1024stremio",
+                        largeImageKey: mediaPoster ?? "1024stremio",
                         largeImageText: "Stremio Enhanced",
                         smallImageKey: "menuburger",
                         smallImageText: "Main Menu",
                         instance: false
                     });
-                    
-                    seasonSelectMenu.addEventListener('change', (e:any) => {
-                        ipcRenderer.send("discordrpc-update", { 
-                            details: `${showName} ${seasonSelectMenu.value == "all" ? "" : `(S${seasonSelectMenu.value})`}`,
-                            state: 'Exploring',
-                            largeImageKey: showPoster ?? "1024stremio",
-                            largeImageText: "Stremio Enhanced",
-                            smallImageKey: "menuburger",
-                            smallImageText: "Main Menu",
-                            instance: false
-                        });
-                    });
                 })
-            } else if(mediaType == "movie") {
-                let moviePoster = detailScope.info.poster;
-                let movieName = detailScope.info.name;
-                
-                ipcRenderer.send("discordrpc-update", { 
-                    details: movieName,
-                    state: 'Exploring',
-                    largeImageKey: moviePoster ?? "1024stremio",
-                    largeImageText: "Stremio Enhanced",
-                    smallImageKey: "menuburger",
-                    smallImageText: "Main Menu",
-                    instance: false
-                });
-            }
+            })
         }
     }
     
     private static checkMainMenu() {
-        if(location.href.endsWith("#/")) {
-            ipcRenderer.send("discordrpc-update", { 
-                details: "Home", 
-                largeImageKey: "1024stremio",
-                largeImageText: "Stremio Enhanced",
-                smallImageKey: "menuburger",
-                smallImageText: "Main Menu",
-                instance: false
-            });
+        let activityDetails = {
+            details: "",
+            largeImageKey: "1024stremio",
+            largeImageText: "Stremio Enhanced",
+            smallImageKey: "menuburger",
+            smallImageText: "Main Menu",
+            instance: false
+        };
+    
+        switch (location.hash) {
+            case '':
+            case "#/":
+                this.logger.info("Updating activity to Home.");
+                activityDetails.details = "Home";
+                break;
+            case "#/discover":
+                this.logger.info("Updating activity to Discover.");
+                activityDetails.details = "Discover";
+                break;
+            case "#/library":
+                this.logger.info("Updating activity to Library.");
+                activityDetails.details = "Library";
+                break;
+            case "#/calendar":
+                this.logger.info("Updating activity to Calendar.");
+                activityDetails.details = "Calendar";
+                break;
+            case "#/addons":
+                this.logger.info("Updating activity to Addons.");
+                activityDetails.details = "Addons";
+                break;
+            case "#/settings":
+                this.logger.info("Updating activity to Settings.");
+                activityDetails.details = "Settings";
+                break;
+            default:
+                return;
+        }
+    
+        ipcRenderer.send("discordrpc-update", activityDetails);
+    };
+    
+    private static async getMetaDetails() {
+        let metaDetailsState = null;
+        
+        // Retry fetching the data until it's available
+        while (metaDetailsState == null || !metaDetailsState.metaItem?.content?.content) {
+            try {
+                metaDetailsState = await Helpers._eval('core.transport.getState(\'meta_details\')');
+                
+                if (metaDetailsState.metaItem?.content?.content) {
+                    break;  // Data is available, break out of the loop
+                }
+            } catch (err) {
+                console.error('Error fetching meta details:', err);
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
-        if(location.href.includes("#/discover/")) {
-            ipcRenderer.send("discordrpc-update", { 
-                details: "Discover", 
-                largeImageKey: "1024stremio",
-                largeImageText: "Stremio Enhanced",
-                smallImageKey: "menuburger",
-                smallImageText: "Main Menu",
-                instance: false
-            });
-        }
+        const metaDetails = metaDetailsState.metaItem.content.content;
+        return metaDetails;
+    }
+
+    private static async getPlayerState() {
+        let playerState = null;
+      
+        // Retry fetching the data until it's available
+        while (playerState == null || !playerState.seriesInfo || !playerState.metaItem?.content) {
+            try {
+                playerState = await Helpers._eval('core.transport.getState(\'player\')');
+                
+                if (playerState.seriesInfo && playerState.metaItem?.content) {
+                break;  // Data is available, break out of the loop
+                }
+            } catch (err) {
+                console.error('Error fetching player state:', err);
+            }
         
-        if(location.href.includes("#/library/")) {
-            ipcRenderer.send("discordrpc-update", { 
-                details: "Library", 
-                largeImageKey: "1024stremio",
-                largeImageText: "Stremio Enhanced",
-                smallImageKey: "menuburger",
-                smallImageText: "Main Menu",
-                instance: false
-            });
+            await new Promise(resolve => setTimeout(resolve, 1000)); 
         }
-        
-        if(location.href.includes("#/calendar")) {
-            ipcRenderer.send("discordrpc-update", { 
-                details: "Calender", 
-                largeImageKey: "1024stremio",
-                largeImageText: "Stremio Enhanced",
-                smallImageKey: "menuburger",
-                smallImageText: "Main Menu",
-                instance: false
-            });
-        }
-        
-        if(location.href.includes("#/addons/")) {
-            ipcRenderer.send("discordrpc-update", { 
-                details: "Addons", 
-                largeImageKey: "1024stremio",
-                largeImageText: "Stremio Enhanced",
-                smallImageKey: "menuburger",
-                smallImageText: "Main Menu",
-                instance: false
-            });
-        }
-        
-        if(location.href.includes("#/settings")) {
-            ipcRenderer.send("discordrpc-update", { 
-                details: "Settings", 
-                largeImageKey: "1024stremio",
-                largeImageText: "Stremio Enhanced",
-                smallImageKey: "menuburger",
-                smallImageText: "Main Menu",
-                instance: false
-            });
-        }
+      
+        const seriesInfoDetails = playerState.seriesInfo;
+        const metaDetails = playerState.metaItem.content;
+        return { seriesInfoDetails, metaDetails };
     }
 }
-
+    
 export default DiscordPresence;

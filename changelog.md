@@ -51,3 +51,20 @@ This should've been part of v0.7 tbh, but I rushed the previous release for no r
 **I am soon planning move on from https://app.strem.io/shell-v4.4/ and use https://web.stremio.com/ instead. It will take some work but it will fix the [multiple audio tracks issue](https://github.com/REVENGE977/stremio-enhanced-community/issues/3) and make this project more in-line with the newest features added to Stremio.**
 
 *Note: I've only tested the update on Windows. I do not have access to a mac at the moment*
+
+## Update v0.8
+#### This is so far the closest experience to the official app while still having the functionality and customizability of plugins and themes!
+- **Now uses [Stremio Web v5](https://web.stremio.com/) instead of [Stremio shell-v4.4](https://app.strem.io/shell-v4.4/). This means:**
+  - Support for multiple audio tracks, allowing you to switch audio tracks as you would in the official app.
+  - Subtitles menu is working more often than not now.
+  - Access to the latest features, like the episode search bar.
+- **Way faster launch time:** The [StremioService.isProcessRunning()](https://github.com/REVENGE977/stremio-enhanced-community/blob/main/src/utils/StremioService.ts#L81) method was previously taking too long to execute, which has now been resolved.
+- **More consistent Discord Rich Presence.**
+- **Stremio Service can now be placed in the same directory as the app:** You can now download the [.zip archive of Stremio Service](https://github.com/Stremio/stremio-service/releases/tag/v0.1.13), extract it in the same directory as Stremio Enhanced, and it should be recognized. Previously, Stremio Service had to be installed on your system using the setup file.
+- **Better codebase:** Instead of embedding HTML/JS as strings in the source code, most HTML/JS components are now separate files inside ./src/components. This makes debugging and making changes much easier.
+- **Improved logging:** Class names are now displayed in log messages.
+
+
+**Notes:**
+- This update has only been tested on Windows. I do not currently have access to a Mac but may create a macOS Virtual Machine for testing in the near future.
+- Since this project now uses [Stremio Web v5](https://web.stremio.com/), this means most, if not all, previous themes and plugins are no longer compatible and will require an update. This is because in [Stremio Web v5](https://web.stremio.com/), the UI has different structure, classes and ids are different, etc. So far I've only updated [Amoled theme](https://github.com/REVENGE977/StremioAmoledTheme) and [SlashToSearch](https://github.com/REVENGE977/SlashToSearch) to work on this version. I'll work on updating [BetterEpisodeList](https://github.com/REVENGE977/BetterEpisodeList) soon.

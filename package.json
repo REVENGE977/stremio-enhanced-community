@@ -1,10 +1,10 @@
 {
   "name": "stremio-enhanced",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Electron-based Stremio client with plugins and themes support.",
   "main": "./dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node ./copyComponents.js",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "dev": "cls && npm run build && npx electron --log-level=3 ./dist/Main.js --devtools",
@@ -22,7 +22,6 @@
   "author": "REVENGE",
   "license": "MIT",
   "devDependencies": {
-    "@types/angular": "^1.8.9",
     "@types/discord-rpc": "^4.0.8",
     "@types/electron": "^1.6.10",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -35,7 +34,6 @@
   },
   "dependencies": {
     "@types/winston": "^2.4.4",
-    "angular": "^1.8.3",
     "discord-rpc": "^4.0.1",
     "electron-prompt": "^1.7.0",
     "electron-updater": "^5.3.0",

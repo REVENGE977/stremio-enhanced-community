@@ -1,199 +1,145 @@
+import Helpers from "../utils/Helpers";
 import MetaData from "../interfaces/MetaData"
+import { getPluginItemTemplate } from "../components/plugin-item/pluginItem";
+import { getThemeItemTemplate } from "../components/theme-item/themeItem";
+import { getEnhancedNav } from "../components/enhanced-nav/enhancedNav";
+import { getLogger } from "../utils/logger";
+import ModManager from "./ModManager";
 
 class Settings {
-    public static addSection(sectionid:string, title:string, last:Boolean) {
-        // add section to settings panel
-        const settingsPanel = document.querySelector("#settingsPanel");
-        
-        const hr1 = document.createElement("hr");
-        const section = document.createElement("section");
-        section.id = sectionid;
-        if (last) section.classList.add("last");
-        
-        const h2 = document.createElement("h2");
-        h2.setAttribute("translate", `SETTINGS_NAV_${sectionid}`);
-        h2.classList.add("ng-scope", "ng-binding");
-        h2.textContent = title;
-        
-        section.appendChild(h2);
-        settingsPanel.appendChild(hr1);
-        settingsPanel.appendChild(section);
-        const hr2 = document.createElement("hr");
-        settingsPanel.appendChild(hr2);
-        
-        // add section to nav
-        const nav = document.querySelector("#settingsPage > div.sections > nav");
+    private static logger = getLogger("DiscordPresence");
 
-        const a = document.createElement("a");
-        a.href = `#settings-${sectionid}`;
-        a.tabIndex = -1;
-        
-        const div = document.createElement("div");
-        div.setAttribute("translate", `SETTINGS_NAV_${sectionid}`);
-        div.classList.add("label", "ng-scope", "ng-binding", "last");
-        div.textContent = title;
-        
-        a.appendChild(div);
-        nav.appendChild(a);  
+    public static addSection(sectionid:string, title:string) {
+        Helpers.waitForElm(`[class^="sections-container-"]`).then(() => {
+            this.logger.info("Adding section: " + sectionid + " with title: " + title);
+            // add section to settings panel
+            const settingsPanel = document.querySelector(`[class^="sections-container-"]`);
+
+            const sectionClassName = document.querySelector(`[class^="section-container-"]`).className;
+            const titleClassName = document.querySelector(`[class^="section-title-"]`).className;
+
+            const sectionContainer = document.createElement("div");
+            sectionContainer.className = sectionClassName;
+            sectionContainer.id = sectionid;
+
+            const sectionTitle = document.createElement("div");
+            sectionTitle.className = titleClassName;
+            sectionTitle.textContent = title;
+
+            sectionContainer.appendChild(sectionTitle);
+
+            settingsPanel.appendChild(sectionContainer);
+
+            // add section to nav
+            Helpers.waitForElm(`[class^="side-menu-container-"]`).then(() => {
+                const nav = document.querySelector(`[class^="side-menu-container-"]`);
+                const shortcutsNav = document.querySelector('[title="Shortcuts"]');
+
+                const enhancedNavContainer = document.createElement("div");
+                enhancedNavContainer.innerHTML = getEnhancedNav();
+                
+                nav.insertBefore(enhancedNavContainer, shortcutsNav.nextSibling);
+            });
+        })
     }
 
     public static addCategory(title:string, sectionid:string, icon:string) {
-        const section = document.getElementById(sectionid);
+        Helpers.waitForElm(`[class^="section-container-"]`).then(() => {
+            this.logger.info("Adding category: " + title + " to section: " + sectionid);
+            const containerClass = document.querySelector(`[class^="section-container-"]`).className;
+            const categoryClass = document.querySelector(`[class^="section-category-container-"]`).className;
+            const categoryTitleClass = document.querySelector(`[class^="section-category-container-"] > [class^="label-"]`).className;
+            let categoryIconClass:any = document.querySelector(`[class^="section-category-container-"] > [class^="icon-"]`);
 
-        const categoryDiv = document.createElement("div");
-        categoryDiv.classList.add("category");
-        
-        const titleDiv = document.createElement("div");
-        titleDiv.classList.add("title");
-        titleDiv.innerHTML = `${icon} ${title}`;
-        
-        categoryDiv.appendChild(titleDiv);
-        section.appendChild(categoryDiv);
+            if (categoryIconClass instanceof SVGElement) {
+                categoryIconClass = categoryIconClass.className.baseVal;
+            } else if (categoryIconClass) {
+                categoryIconClass = categoryIconClass.className;
+            }
+
+            
+            icon = icon.replace(`class="icon"`, `class="${categoryIconClass}"`);
+
+            const section = document.getElementById(sectionid);
+
+            const containerDiv = document.createElement("div");
+            containerDiv.classList.add(containerClass);
+
+            const categoryDiv = document.createElement("div");
+            categoryDiv.classList.add(categoryClass);
+            
+            const titleDiv = document.createElement("div");
+            titleDiv.classList.add(categoryTitleClass);
+            titleDiv.innerHTML = title;
+
+            categoryDiv.innerHTML += icon;
+            
+            categoryDiv.appendChild(titleDiv);
+            containerDiv.appendChild(categoryDiv);
+            section.appendChild(containerDiv);
+        })
     }
 
     public static addButton(title:string, id:string, query:string) {
-        const element = document.querySelector(query);
+        Helpers.waitForElm(query).then(() => {
+            const element = document.querySelector(query);
 
-        const buttonDiv = document.createElement("div");
-        buttonDiv.id = id;
-        buttonDiv.setAttribute("translate", title);
-        buttonDiv.tabIndex = -1;
-        buttonDiv.classList.add("button", "button-s", "ng-scope", "ng-binding");
-        buttonDiv.textContent = title;
-        
-        element.appendChild(buttonDiv);        
+            const outerDiv = document.createElement("div");
+            outerDiv.classList.add("option-container-EGlcv");
+
+            const anchor = document.createElement("a");
+            anchor.setAttribute("tabindex", "0");
+            anchor.setAttribute("title", title);
+            anchor.classList.add("option-input-container-NPgpT", "button-container-ENMae", "button-container-zVLH6");
+            anchor.id = id;
+            
+            const innerDiv = document.createElement("div");
+            innerDiv.classList.add("label-FFamJ");
+            innerDiv.textContent = title;
+
+            anchor.appendChild(innerDiv);
+
+            outerDiv.appendChild(anchor);
+
+            element.appendChild(outerDiv);
+        })
     }
 
     public static addItem(type: "theme" | "plugin", fileName:string, metaData:MetaData) {
+        // let addonClasses = this.getAddonClasses().replace(/\./g, "").trim();
+
+        this.logger.info("Adding " + type + ": " + fileName);
         if (type == "theme") {
-            const container = document.querySelector(`#enhanced > div:nth-child(2)`);
-            
-            const addonDiv = document.createElement("div");
-            addonDiv.classList.add("pure-u-1-4", "addon", "ng-scope", "installed");
-            addonDiv.setAttribute("name", `${fileName}-box`);
-        
-            const buttonDiv = document.createElement("div");
-        
-            const applyButton = document.createElement("button");
-            applyButton.id = fileName;
-            applyButton.style.cssText = "float:right; height: 2.5rem;";
-            applyButton.tabIndex = -1;
-            applyButton.setAttribute("translate", "apply");
-            applyButton.classList.add("button-b", "ng-scope", "ng-binding");
-            applyButton.textContent = (localStorage.getItem("currentTheme") == fileName ? "Applied" : "Apply");
-            applyButton.disabled = localStorage.getItem("currentTheme") == fileName;
-            applyButton.setAttribute("onclick", `applyTheme('${fileName}')`);
-        
-            const updateButton = document.createElement("button");
-            updateButton.id = `${fileName}-update`;
-            updateButton.style.cssText = "float:right; height: 2.5rem; display:none; color: #f5bf42;";
-            updateButton.tabIndex = -1;
-            updateButton.setAttribute("translate", "update");
-            updateButton.classList.add("button", "button-s", "ng-scope", "ng-binding");
-            updateButton.textContent = "Update";
-        
-            buttonDiv.appendChild(applyButton);
-            buttonDiv.appendChild(updateButton);
-        
-            const titleDiv = document.createElement("div");
-            titleDiv.classList.add("title", "ng-binding");
-            titleDiv.textContent = metaData.name;
-        
-            const footerDiv = document.createElement("div");
-            footerDiv.classList.add("footer");
-        
-            const descriptionDiv = document.createElement("div");
-            descriptionDiv.classList.add("date", "ng-isolate-scope");
-            descriptionDiv.innerHTML = `<b>Description:</b> ${metaData.description}`;
-        
-            const authorDiv = document.createElement("div");
-            authorDiv.classList.add("date", "ng-isolate-scope");
-            authorDiv.innerHTML = `<b>Author:</b> ${metaData.author}`;
-        
-            const versionDiv = document.createElement("div");
-            versionDiv.classList.add("date", "ng-isolate-scope");
-            versionDiv.innerHTML = `<b>Version:</b> ${metaData.version}`;
-        
-            footerDiv.appendChild(descriptionDiv);
-            footerDiv.appendChild(authorDiv);
-            footerDiv.appendChild(versionDiv);
-            footerDiv.appendChild(document.createElement("br"));
-        
-            addonDiv.appendChild(buttonDiv);
-            addonDiv.appendChild(titleDiv);
-            addonDiv.appendChild(footerDiv);
-            
-            container.appendChild(addonDiv);
+            Helpers.waitForElm('#enhanced > div:nth-child(2)').then(() => {
+                this.addTheme(fileName, metaData);
+            })
         } else if (type == "plugin") {
-            let enabledPlugins = JSON.parse(localStorage.getItem("enabledPlugins"));
-        
-            const container = document.querySelector(`#enhanced > div:nth-child(3)`);
-        
-            const addonDiv = document.createElement("div");
-            addonDiv.classList.add("pure-u-1-4", "addon", "ng-scope");
-            addonDiv.style.marginTop = "1rem";
-            addonDiv.setAttribute("name", `${fileName}-box`);
-        
-            const buttonDiv = document.createElement("div");
-        
-            const updateButton = document.createElement("button");
-            updateButton.id = `${fileName}-update`;
-            updateButton.style.cssText = "float:right; height: 2.5rem; display:none; color: #f5bf42;";
-            updateButton.tabIndex = -1;
-            updateButton.setAttribute("translate", "update");
-            updateButton.classList.add("button", "button-s", "ng-scope", "ng-binding");
-            updateButton.textContent = "Update";
-        
-            buttonDiv.appendChild(updateButton);
-        
-            const checkboxDiv = document.createElement("div");
-            checkboxDiv.classList.add("stremio-checkbox", "ng-isolate-scope");
-        
-            const optionDiv = document.createElement("div");
-            optionDiv.classList.add("option", "option-toggle");
-        
-            const checkbox = document.createElement("input");
-            checkbox.style.cssText = "float:right;";
-            checkbox.classList.add("plugin");
-            checkbox.name = fileName;
-            checkbox.type = "checkbox";
-            checkbox.tabIndex = -1;
-            checkbox.checked = enabledPlugins.includes(fileName);
-        
-            optionDiv.appendChild(checkbox);
-            checkboxDiv.appendChild(optionDiv);
-        
-            const titleDiv = document.createElement("div");
-            titleDiv.classList.add("title", "ng-binding");
-            titleDiv.textContent = metaData.name;
-        
-            const footerDiv = document.createElement("div");
-            footerDiv.classList.add("footer");
-        
-            const descriptionDiv = document.createElement("div");
-            descriptionDiv.classList.add("date", "ng-isolate-scope");
-            descriptionDiv.innerHTML = `<b>Description:</b> ${metaData.description}`;
-        
-            const authorDiv = document.createElement("div");
-            authorDiv.classList.add("date", "ng-isolate-scope");
-            authorDiv.innerHTML = `<b>Author:</b> ${metaData.author}`;
-        
-            const versionDiv = document.createElement("div");
-            versionDiv.classList.add("date", "ng-isolate-scope");
-            versionDiv.innerHTML = `<b>Version:</b> ${metaData.version}`;
-        
-            footerDiv.appendChild(descriptionDiv);
-            footerDiv.appendChild(authorDiv);
-            footerDiv.appendChild(versionDiv);
-            footerDiv.appendChild(document.createElement("br"));
-        
-            addonDiv.appendChild(buttonDiv);
-            addonDiv.appendChild(checkboxDiv);
-            addonDiv.appendChild(titleDiv);
-            addonDiv.appendChild(footerDiv);
-        
-            container.appendChild(addonDiv);
+            Helpers.waitForElm('#enhanced > div:nth-child(3)').then(() => {
+                this.addPlugin(fileName, metaData);
+            })
         }        
+    }
+
+    private static addPlugin(fileName:string, metaData:{name:string, description:string, author:string, version:string}) {
+        let enabledPlugins = JSON.parse(localStorage.getItem("enabledPlugins"));
+
+        const pluginContainer = document.createElement("div");
+        pluginContainer.innerHTML = getPluginItemTemplate(fileName, metaData, enabledPlugins.includes(fileName));
+        pluginContainer.setAttribute("name", `${fileName}-box`);
+
+        document.querySelector(`#enhanced > div:nth-child(3)`).appendChild(pluginContainer);
+        ModManager.checkForItemUpdates(fileName);
+    }
+
+    private static addTheme(fileName:string, metaData:{name:string, description:string, author:string, version:string}) {
+        let currentTheme = localStorage.getItem("currentTheme");
+
+        const themeContainer = document.createElement("div");
+        themeContainer.innerHTML = getThemeItemTemplate(fileName, metaData, currentTheme == fileName);
+        themeContainer.setAttribute("name", `${fileName}-box`);
+
+        document.querySelector(`#enhanced > div:nth-child(2)`).appendChild(themeContainer);
+        ModManager.checkForItemUpdates(fileName);
     }
 
     public static removeItem(fileName:string) {
@@ -203,11 +149,11 @@ class Settings {
     public static activeSection(element:Element) {
         for (let i = 0; i < 6; i++) {
             try {
-                document.querySelector("#settingsPage > div.sections > nav > a:nth-child(" + i + ")").classList.remove("active"); 
+                document.querySelector(`.side-menu-container-NG17D > div:nth-child(${i})`).classList.remove("selected-yhdng"); 
             }catch {}
         }
 
-        element.classList.add("active");
+        element.classList.add("selected-yhdng");
     }
 }
 
