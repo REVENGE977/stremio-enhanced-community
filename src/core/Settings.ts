@@ -7,7 +7,7 @@ import { getLogger } from "../utils/logger";
 import ModManager from "./ModManager";
 
 class Settings {
-    private static logger = getLogger("DiscordPresence");
+    private static logger = getLogger("Settings");
 
     public static addSection(sectionid:string, title:string) {
         Helpers.waitForElm(`[class^="sections-container-"]`).then(() => {

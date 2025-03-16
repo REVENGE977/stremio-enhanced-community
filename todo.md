@@ -1,10 +1,13 @@
 # Todo list
-- Migrate to https://web.stremio.com/ (v5) instead of shell4.4 (v4). The following things are what's left:
+- [x] Migrate to https://web.stremio.com/ (v5) instead of shell4.4 (v4). The following things are what's left:
   - [x] Fixing the audio tracks menu being disabled on Stremio Enhanced 
   - [x] Themes component and adding to list implementation
   - [x] Adding 'Enhanced' to the left navbar in the settings
   - [x] Fixing about category
   - [x] Fixing Discord Rich Presence implementation to work with v5
   - [x] Plugin/theme update reimplementation
-  - [ ] Fixing 'BetterEpisodeList' plugin to work on v5
-- Create more plugins/themes?
+- [ ] Create more plugins/themes?
+- [ ] Improve Update system: auto update so user doesn't have to download anything manually.
+- [ ] Support addons links by opening directly: instead of having the user copy and paste links.
+- [ ] Make it so if the user opens Discord after opening Stremio Enhanced, Discord Rich Presence still works.
+- [ ] In-app patch notes when an update is available.

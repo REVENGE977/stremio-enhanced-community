@@ -5,7 +5,7 @@ import { getLogger } from "../utils/logger";
 import { join } from "path";
 
 class Updater {
-    private static logger = getLogger("DiscordPresence");
+    private static logger = getLogger("Updater");
 
     public static async checkForUpdates(noUpdatePrompt: boolean) {
         try {

@@ -9,7 +9,7 @@ import Properties from "./Properties";
 import { getApplyThemeTemplate } from "../components/apply-theme/applyTheme";
 
 class ModManager {
-    private static logger = getLogger("DiscordPresence");
+    private static logger = getLogger("ModManager");
     
     public static loadPlugin(pluginName:string) {
         if(document.getElementById(pluginName)) return;
