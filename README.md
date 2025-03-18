@@ -1,63 +1,94 @@
 <p align="center">
 	<a href="https://stremio.com/">
-		<img src="https://github.com/REVENGE977/stremio-enhanced/raw/main/images/icon.ico">
+		<img src="https://github.com/REVENGE977/stremio-enhanced/raw/main/images/icon.ico" alt="Stremio Enhanced Icon">
 	</a>
 	<h1 align="center">Stremio Enhanced</h1>
 	<p align="center">
-	<img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="NodeJS"> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"> <img src="https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white" alt="Electron.js"> <img src="https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white" alt="HTML"> <img src="https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white" alt="CSS">
+		<img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="NodeJS">
+		<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+		<img src="https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white" alt="Electron.js">
+		<img src="https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white" alt="HTML">
+		<img src="https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white" alt="CSS">
 	</p>
 </p>
 
-## What is Stremio Enhanced ?
-Stremio Enhanced is an Electron-based [Stremio](https://www.stremio.com/) client with plugins and themes support. It runs the [Stremio Service](https://github.com/Stremio/stremio-service) automatically and loads [the web version of Stremio](https://app.strem.io/shell-v4.4/).
+## Table of Contents
+- [Table of Contents](#table-of-contents)
+- [What is Stremio Enhanced?](#what-is-stremio-enhanced)
+- [Downloads](#downloads)
+- [Installation](#installation)
+- [Themes and Plugins](#themes-and-plugins)
+	- [Installing Themes](#installing-themes)
+	- [Installing Plugins](#installing-plugins)
+- [Differences Between Addons and Plugins](#differences-between-addons-and-plugins)
+- [Creating Your Own Plugin](#creating-your-own-plugin)
+- [Creating Your Own Theme](#creating-your-own-theme)
+- [Known Issues](#known-issues)
+- [Disclaimer](#disclaimer)
 
+## What is Stremio Enhanced?
+Stremio Enhanced is an Electron-based [Stremio](https://www.stremio.com/) client with plugins and themes support. It runs the [Stremio Service](https://github.com/Stremio/stremio-service) automatically and loads [the web version of Stremio](https://web.stremio.com).
 
-With this project you can make stremio look like this, for example:
+With this project, you can make Stremio look like this, for example:
 ![screenshot](https://github.com/REVENGE977/stremio-enhanced/raw/main/images/amoled_screenshot.png)
 
-this theme can be found in [StremioAmoledTheme](https://github.com/REVENGE977/StremioAmoledTheme).
+This theme can be found in [StremioAmoledTheme](https://github.com/REVENGE977/StremioAmoledTheme).
+
 ## Downloads
-You can download the latest version from [the releases tab](https://github.com/REVENGE977/stremio-enhanced/releases), or build it yourself:
-```sh
-git clone https://github.com/REVENGE977/stremio-enhanced.git
-cd stremio-enhanced
-npm install
-npm run package-all
-npm run package-macos-arm
-```
+You can download the latest version from [the releases tab](https://github.com/REVENGE977/stremio-enhanced/releases).
 
-## How do I install themes/plugins?
-Go to the settings and scroll down and you should see a "OPEN THEMES FOLDER" button
-click on it and it should open the themes folder to install themes simply move your theme into that folder
-and when you restart stremio enhanced you should be able to see your theme in the settings and a button to apply that theme.
+## Installation
+1. Clone the repository: `git clone https://github.com/REVENGE977/stremio-enhanced.git`
+2. Navigate to the project directory: `cd stremio-enhanced`
+3. Install dependencies: `npm install`
+4. Build the project: 
+    - For all platforms: `npm run package-all`
+    - For macOS ARM: `npm run package-macos-arm`
 
-same for plugins, you just click on "OPEN PLUGINS FOLDER" and move your plugin into the plugins folder.
+## Themes and Plugins
+
+### Installing Themes
+1. Go to the settings and scroll down.
+2. Click on the "OPEN THEMES FOLDER" button.
+3. Move your theme into the opened folder.
+4. Restart Stremio Enhanced.
+5. You should see your theme in the settings with an option to apply it.
+
+### Installing Plugins
+1. Go to the settings and scroll down.
+2. Click on the "OPEN PLUGINS FOLDER" button.
+3. Move your plugin into the opened folder.
+4. Restart Stremio Enhanced.
+5. You should see your plugin in the settings with an option to enable it.
+
 ![settings_screenshot](https://github.com/REVENGE977/stremio-enhanced/raw/main/images/settings_screenshot.png)
 
-## What is the difference between addons and plugins?
-Addons are available on the normal version of Stremio. They simply add catalogs and streams for Stremio. Plugins, on the other hand, add more functionality to Stremio, like new features, for example.
+## Differences Between Addons and Plugins
+- **Addons** are available on the normal version of Stremio. They add catalogs and streams for Stremio.
+- **Plugins** add more functionality to Stremio, like new features.
 
+## Creating Your Own Plugin
+Plugins are simply JavaScript files running on the client side. Create a JavaScript file with a `.plugin.js` extension and write your code as you would normally for the client side.
 
-## How do I make my own plugin?
-Plugins are simply JavaScript files running on the client side, so just write your JavaScript code like you normally would on the client side and add `.plugin.js` at the end of the JavaScript file name.
+As of version v0.3, you are required to provide metadata for the plugin. Here is an example:
 
-As of version v0.3 you are required to provide meta data for the plugin, here is an example:
 ```js
 /**
  * @name YourPluginNameHere
  * @description What does your plugin do?
- * @updateUrl your plugin's raw file url for update checking. (set this to none if you don't want to provide one)
- * @version VersionHere (ex: 1.0.0)
+ * @updateUrl your plugin's raw file URL for update checking. (Set this to 'none' if you don't want to provide one)
+ * @version VersionHere (e.g., 1.0.0)
  * @author AuthorName
  */
 ```
-## How do I make my own theme?
-You just make a file with a name that ends with `.theme.css` and write your CSS modifications there. Obviously, you can use the devtools (`Ctrl+Shift+I`) to find an element's class name, etc.
 
-*You are also required to provide metadata in your theme. The same way as plugins from the example above.*
+## Creating Your Own Theme
+Create a file with a name ending in `.theme.css` and write your CSS modifications there. You can use the devtools (`Ctrl+Shift+I`) to find an element's class name, etc.
+
+*You are also required to provide metadata in your theme, in the same way as plugins.*
 
 ## Known Issues
-- Subtitles are not available for **some** streams that do have embedded subs. This seems to be an issue with either [Stremio Web](https://web.stremio.com/) or Stremio Service, since this is also an issue in browser. Subtitles do work fine for **most** streams though.
+- Subtitles are not available for **some** streams that have embedded subs. This seems to be an issue with either [Stremio Web](https://web.stremio.com/) or Stremio Service, as it also occurs in the browser. Subtitles do work fine for **most** streams though.
 
 ## Disclaimer
 This project is not affiliated in any way with Stremio.

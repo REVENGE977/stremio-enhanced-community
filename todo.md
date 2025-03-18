@@ -7,6 +7,7 @@
   - [x] Fixing Discord Rich Presence implementation to work with v5
   - [x] Plugin/theme update reimplementation
 - [ ] Create more plugins/themes?
+  - AniSkip integration for autoskipping segments such as intros and outros in anime.
 - [ ] Improve Update system: auto update so user doesn't have to download anything manually.
 - [ ] Support addons links by opening directly: instead of having the user copy and paste links.
 - [ ] Make it so if the user opens Discord after opening Stremio Enhanced, Discord Rich Presence still works.

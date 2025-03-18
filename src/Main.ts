@@ -118,14 +118,15 @@ app.on("window-all-closed", () => {
     }
 });
 
-// implements zooming in/out using shortcuts (ctrl =, ctrl -)
 app.on('browser-window-created', (_, window) => {
     window.webContents.on('before-input-event', (event:any, input:any) => {
+        // Opens Devtools on Ctrl + Shift + I
         if (input.control && input.shift && input.key === 'I') {
             window.webContents.toggleDevTools();
             event.preventDefault();
         }
 
+        // implements zooming in/out using shortcuts (ctrl =, ctrl -)
         if (input.control && input.key === '=') {
             mainWindow.webContents.zoomFactor += 0.1;
             event.preventDefault();

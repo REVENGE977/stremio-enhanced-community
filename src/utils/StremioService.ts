@@ -5,6 +5,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import { exec as execAsync } from "child_process";
 import * as process from 'process';
+import { homedir } from 'os';
 
 const execPromise = promisify(execAsync);
 class StremioService {
@@ -13,10 +14,13 @@ class StremioService {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 try {
+                    this.logger.info("Starting Stremio Service from " + servicePath);
+
                     if (exec(servicePath)) {
                         this.logger.info("Stremio Service Started.");
                         resolve();
                     } else {
+                        this.logger.error("Failed to start the service.");
                         reject(new Error("Failed to start the service.")); 
                     }
                 } catch (error) {
@@ -108,7 +112,8 @@ class StremioService {
         // If not found locally, check OS-specific paths
         switch (process.platform) {
             case 'win32':
-                installationPath = join(process.env.LOCALAPPDATA || '', 'Programs', 'StremioService', 'stremio-service.exe');
+                const localAppData = process.env.LOCALAPPDATA || join(homedir(), 'AppData', 'Local');
+                installationPath = join(localAppData, 'Programs', 'StremioService', 'stremio-service.exe');
                 break;
             case 'darwin':
                 installationPath = join('/Applications', 'StremioService.app', 'Contents', 'MacOS', 'stremio-service');
